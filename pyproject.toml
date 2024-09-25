@@ -6,6 +6,7 @@ authors = [{name = "Sylvain Mouquet", email = "sylvain.mouquet@gmail.com"}]
 readme = "README.md"
 requires-python = ">=3.9"
 dependencies = [
+    "anyio>=4.6.0",
     "python-on-whales>=0.73.0",
     "reattempt>=1.0.10",
 ]

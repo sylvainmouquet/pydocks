@@ -1,6 +1,5 @@
 import pytest
 
-
 class RetryException(Exception): ...
 
 
