@@ -12,6 +12,7 @@ SHOW_EXCEPTIONS = False
 import pytest
 
 # pytest_plugins = ["pydocks.conftest"]
+pytest_plugins = ("pydocks")
 
 @pytest.fixture
 def disable_logging_exception(mocker):
