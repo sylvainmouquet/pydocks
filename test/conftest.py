@@ -9,10 +9,8 @@ MIN_TIME = 0.1  # in seconds
 MAX_TIME = 0.2  # in seconds
 
 SHOW_EXCEPTIONS = False
-import pytest
 
-# pytest_plugins = ["pydocks.conftest"]
-pytest_plugins = ("pydocks")
+pytest_plugins = ["pytester"]
 
 @pytest.fixture
 def disable_logging_exception(mocker):
