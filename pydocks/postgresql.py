@@ -28,18 +28,19 @@ logger.addHandler(logging.NullHandler())
 
 # https://hub.docker.com/_/postgres/tags
 # TEST_POSTGRES_DOCKER_IMAGE: str = "docker.io/postgres:16.3"
-TEST_POSTGRES_DOCKER_IMAGE: str = "docker.io/postgres:17rc1-alpine3.20"
+TEST_POSTGRESQL_DOCKER_IMAGE: str = "docker.io/postgres:17rc1-alpine3.20"
 
 
 @pytest.fixture(autouse=False)
 async def postgresql_container(docker: libdocker, mocker):  # type: ignore
     mocker.patch("logging.exception", lambda *args, **kwargs: logger.warning(f"Exception raised {args}"))
 
-    logger.debug(f"[PYTEST] Pull docker image : {TEST_POSTGRES_DOCKER_IMAGE}")
+    postgresql_image = TEST_POSTGRESQL_DOCKER_IMAGE if 'TEST_POSTGRESQL_DOCKER_IMAGE' not in os.environ else os.environ['TEST_POSTGRESQL_DOCKER_IMAGE']
+    logger.debug(f"[PYDOCKS] Pull docker image : {postgresql_image}")
 
     def run_container(container_name: str):
         return docker.run(
-            image=TEST_POSTGRES_DOCKER_IMAGE,
+            image=postgresql_image,
             name=container_name,
             detach=True,
             envs={
@@ -49,9 +50,9 @@ async def postgresql_container(docker: libdocker, mocker):  # type: ignore
             expose=[5433],
         )
 
-    await clean_containers(docker, "test-postgres")
+    await clean_containers(docker, "test-postgresql")
 
-    container = run_container(f"test-postgres-{uuid.uuid4()}")
+    container = run_container(f"test-postgresql-{uuid.uuid4()}")
 
     """
     if not os.getenv('reuse', True): 
@@ -81,7 +82,7 @@ async def postgresql_container(docker: libdocker, mocker):  # type: ignore
         db_name="postgres",
     )
 
-    async for instance in wait_and_run_container(docker, container, "postgres"):
+    async for instance in wait_and_run_container(docker, container, "postgresql"):
         yield instance
 
 
@@ -102,7 +103,7 @@ async def postgresql_test_connection(
     await stream.send(b"\x00")  # terminator byte
 
     await stream.receive()
-    logger.info("Connection successful.")
+    logger.info("[PYDOCKS] Connection successful.")
     await stream.aclose()
 
 
@@ -110,6 +111,6 @@ async def postgresql_test_connection(
     try:
         # Execute the SELECT 1 query
         result = await conn.fetchval("SELECT 1")
-        logger.info(f"Query result: {result}")
+        logger.info(f"[PYDOCKS] Query result: {result}")
     finally:
         await conn.close()

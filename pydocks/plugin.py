@@ -57,13 +57,13 @@ async def wait_and_run_container(docker, container, name: str):
     try:
         yield container
     finally:
-        logger.debug(f"[pydocks] Kill container {name} and remove the docker container")
+        logger.debug(f"[PYDOCKS] Kill container {name} and remove the docker container")
         if container.state.status == "running":
-            logger.debug(f"[pydocks] Container {name} is running")
+            logger.debug(f"[PYDOCKS] Container {name} is running")
             docker.kill(container.id)
-            logger.debug(f"[pydocks] Killed container {name}")
+            logger.debug(f"[PYDOCKS] Killed container {name}")
         else:
-            logger.debug(f"[pydocks] Container {name} is not running")
+            logger.debug(f"[PYDOCKS] Container {name} is not running")
 
         # keep the container id, to keep the docker images
         # docker has a garbage collector, when all docker container are deleted the
