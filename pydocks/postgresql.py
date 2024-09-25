@@ -1,3 +1,4 @@
+from unittest.mock import patch
 import pytest
 from pathlib import Path
 import os
@@ -18,6 +19,8 @@ import anyio
 from anyio.abc import SocketStream
 from reattempt import reattempt
 import uuid
+from requests import Session
+from unittest.mock import patch
 
 from pydocks.plugin import clean_containers, socket_test_connection, wait_and_run_container
 
@@ -30,11 +33,24 @@ logger.addHandler(logging.NullHandler())
 # TEST_POSTGRES_DOCKER_IMAGE: str = "docker.io/postgres:16.3"
 TEST_POSTGRESQL_DOCKER_IMAGE: str = "docker.io/postgres:17rc1-alpine3.20"
 
-
-@pytest.fixture(autouse=False)
-async def postgresql_container(docker: libdocker, mocker):  # type: ignore
+@pytest.fixture(scope="function")
+async def postgresql_container(docker: libdocker, mocker, request):  # type: ignore
     mocker.patch("logging.exception", lambda *args, **kwargs: logger.warning(f"Exception raised {args}"))
+    async for container in setup_postgresql_container(docker, request):
+        yield container
+    
+    
+@pytest.fixture(scope="session")
+@patch.object(logging, 'exception', lambda *args, **kwargs: logger.warning(f"Exception raised {args}"))
+def postgresql_container_session(docker: libdocker,request):  # type: ignore
+    import asyncio
+    loop = asyncio.get_event_loop()
+    container = loop.run_until_complete(setup_postgresql_container(docker, request).__anext__())
+    yield container
+    loop.run_until_complete(clean_containers(docker, "test-postgresql"))
 
+
+async def setup_postgresql_container(docker: libdocker, request):  # type: ignore
     postgresql_image = TEST_POSTGRESQL_DOCKER_IMAGE if 'TEST_POSTGRESQL_DOCKER_IMAGE' not in os.environ else os.environ['TEST_POSTGRESQL_DOCKER_IMAGE']
     logger.debug(f"[PYDOCKS] Pull docker image : {postgresql_image}")
 
@@ -54,26 +70,6 @@ async def postgresql_container(docker: libdocker, mocker):  # type: ignore
 
     container = run_container(f"test-postgresql-{uuid.uuid4()}")
 
-    """
-    if not os.getenv('reuse', True): 
-        # Create container on 5433:5432 port exposition
-        # Use default login / password
-        await clean_containers(docker, "test-postgres")
-
-        container = run_container("test-postgres")
-    else:
-            # Check if container exists, if not create it
-        container_name = "test-postgres"
-        existing_container = docker.ps(all=True, filters={"name": f"^{container_name}"})
-
-        if existing_container:
-            container = existing_container[0]
-            if container.state.status != "running":
-                container.start()
-        else:
-            container = run_container(container_name)
-    """
-
     await postgresql_test_connection(
         host="127.0.0.1",
         port=5433,
@@ -84,6 +80,10 @@ async def postgresql_container(docker: libdocker, mocker):  # type: ignore
 
     async for instance in wait_and_run_container(docker, container, "postgresql"):
         yield instance
+
+    if request.scope == "session":
+        # Clean up after session
+        await clean_containers(docker, "test-postgresql")
 
 
 @reattempt(max_retries=30, min_time=0.1, max_time=0.5)
