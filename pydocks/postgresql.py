@@ -42,11 +42,12 @@ async def postgresql_container(docker: libdocker, mocker, request):  # type: ign
     
 @pytest.fixture(scope="session")
 @patch.object(logging, 'exception', lambda *args, **kwargs: logger.warning(f"Exception raised {args}"))
-def postgresql_container_session(docker: libdocker,request):  # type: ignore
+async def postgresql_container_session(docker: libdocker,request):  # type: ignore
     import asyncio
     loop = asyncio.get_event_loop()
     container = loop.run_until_complete(setup_postgresql_container(docker, request).__anext__())
-    yield container
+    async for container in setup_postgresql_container(docker, request):
+        yield container
     loop.run_until_complete(clean_containers(docker, "test-postgresql"))
 
 
