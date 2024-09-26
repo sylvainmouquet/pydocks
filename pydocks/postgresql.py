@@ -3,8 +3,6 @@ import os
 
 
 import pytest_asyncio
-
-# from asgi_lifespan import LifespanManager
 import asyncpg
 import anyio
 from python_on_whales import docker as libdocker
@@ -49,7 +47,7 @@ async def postgresql_container(docker: libdocker, mocker):  # type: ignore
     )
 
     container_name = f"test-postgresql-{uuid.uuid4()}"
-    # await clean_containers(docker, container_name)
+    # optional : await clean_containers(docker, container_name)
 
     async for container in setup_postgresql_container(docker, container_name):
         yield container
