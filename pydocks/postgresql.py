@@ -1,32 +1,25 @@
-from unittest.mock import patch
 import pytest
-from pathlib import Path
 import os
 
-import socket
 
 import pytest_asyncio
-from asyncpg.pool import Pool
-from fastapi import FastAPI
-#from asgi_lifespan import LifespanManager
+
+# from asgi_lifespan import LifespanManager
 import asyncpg
 import anyio
-from python_on_whales import DockerClient
 from python_on_whales import docker as libdocker
 from reattempt import reattempt
 import logging
-import pytest
 import struct
-import anyio
 from anyio.abc import SocketStream
-from reattempt import reattempt
 import uuid
-from requests import Session
-from unittest.mock import patch
 
-from pydocks.plugin import clean_containers, socket_test_connection, wait_and_run_container
+from pydocks.plugin import (
+    clean_containers,
+    socket_test_connection,
+    wait_and_run_container,
+)
 
-import asyncio
 
 logger = logging.getLogger("pydocks")
 logger.addHandler(logging.NullHandler())
@@ -36,9 +29,10 @@ logger.addHandler(logging.NullHandler())
 # TEST_POSTGRES_DOCKER_IMAGE: str = "docker.io/postgres:16.3"
 TEST_POSTGRESQL_DOCKER_IMAGE: str = "docker.io/postgres:17rc1-alpine3.20"
 
+
 @pytest_asyncio.fixture(scope="session", loop_scope="session")
 async def postgresql_clean_all_containers(docker):
-    container_name:str = "test-postgresql"
+    container_name: str = "test-postgresql"
     # clean before
 
     await clean_containers(docker, container_name)
@@ -46,21 +40,28 @@ async def postgresql_clean_all_containers(docker):
     # clean after
     await clean_containers(docker, container_name)
 
+
 @pytest.fixture(scope="function")
 async def postgresql_container(docker: libdocker, mocker):  # type: ignore
-    mocker.patch("logging.exception", lambda *args, **kwargs: logger.warning(f"Exception raised {args}"))
+    mocker.patch(
+        "logging.exception",
+        lambda *args, **kwargs: logger.warning(f"Exception raised {args}"),
+    )
 
     container_name = f"test-postgresql-{uuid.uuid4()}"
     # await clean_containers(docker, container_name)
 
     async for container in setup_postgresql_container(docker, container_name):
         yield container
-    
+
 
 @pytest_asyncio.fixture(scope="session", loop_scope="session")
 async def postgresql_container_session(docker: libdocker, session_mocker):  # type: ignore
-    session_mocker.patch("logging.exception", lambda *args, **kwargs: logger.warning(f"Exception raised {args}"))
-    
+    session_mocker.patch(
+        "logging.exception",
+        lambda *args, **kwargs: logger.warning(f"Exception raised {args}"),
+    )
+
     await clean_containers(docker, "test-postgresql-session")
 
     container_name = f"test-postgresql-session-{uuid.uuid4()}"
@@ -70,7 +71,11 @@ async def postgresql_container_session(docker: libdocker, session_mocker):  # ty
 
 
 async def setup_postgresql_container(docker: libdocker, container_name):  # type: ignore
-    postgresql_image = TEST_POSTGRESQL_DOCKER_IMAGE if 'TEST_POSTGRESQL_DOCKER_IMAGE' not in os.environ else os.environ['TEST_POSTGRESQL_DOCKER_IMAGE']
+    postgresql_image = (
+        TEST_POSTGRESQL_DOCKER_IMAGE
+        if "TEST_POSTGRESQL_DOCKER_IMAGE" not in os.environ
+        else os.environ["TEST_POSTGRESQL_DOCKER_IMAGE"]
+    )
     logger.debug(f"[PYDOCKS] Pull docker image : {postgresql_image}")
 
     def run_container(container_name: str):
@@ -85,14 +90,15 @@ async def setup_postgresql_container(docker: libdocker, container_name):  # type
             expose=[5433],
         )
 
-
     # Select the container with the given name if exists, else create a new one
     containers = docker.ps(all=True, filters={"name": f"^{container_name}$"})
     if containers and len(containers) > 0:
-        container = containers[0] # type: ignore
+        container = containers[0]  # type: ignore
         logger.debug(f"[PYDOCKS] Found existing container: {container_name}")
     else:
-        logger.debug(f"[PYDOCKS] No existing container found, creating new one: {container_name}")
+        logger.debug(
+            f"[PYDOCKS] No existing container found, creating new one: {container_name}"
+        )
         container = run_container(container_name)
 
     await postgresql_test_connection(
@@ -111,7 +117,6 @@ async def setup_postgresql_container(docker: libdocker, container_name):  # type
 async def postgresql_test_connection(
     host: str, port: int, username: str, password: str, db_name: str
 ):
-    
     await socket_test_connection(host, port)
 
     stream: SocketStream = await anyio.connect_tcp(host, port)
@@ -127,8 +132,9 @@ async def postgresql_test_connection(
     logger.info("[PYDOCKS] Connection successful.")
     await stream.aclose()
 
-
-    conn = await asyncpg.connect(user=username, password=password, database=db_name, host=host, port=port)
+    conn = await asyncpg.connect(
+        user=username, password=password, database=db_name, host=host, port=port
+    )
     try:
         # Execute the SELECT 1 query
         result = await conn.fetchval("SELECT 1")

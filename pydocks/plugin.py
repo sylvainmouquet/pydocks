@@ -3,21 +3,12 @@ from pathlib import Path
 import os
 
 import socket
-from asyncpg.pool import Pool
-from fastapi import FastAPI
-#from asgi_lifespan import LifespanManager
-import asyncpg
+
+# from asgi_lifespan import LifespanManager
 import anyio
 from python_on_whales import DockerClient
-from python_on_whales import docker as libdocker
 from reattempt import reattempt
 import logging
-import pytest
-import struct
-import anyio
-from anyio.abc import SocketStream
-from reattempt import reattempt
-import uuid
 
 logger = logging.getLogger("pydocks")
 logger.addHandler(logging.NullHandler())
@@ -49,7 +40,7 @@ async def clean_containers(docker: DockerClient, name: str):
     for container in containers:
         if container.state.running:
             docker.kill(container)
-        logger.info(f'remove container {container.name}')
+        logger.info(f"remove container {container.name}")
         docker.remove(container)
 
 

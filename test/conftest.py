@@ -1,5 +1,6 @@
 import pytest
 
+
 class RetryException(Exception): ...
 
 
@@ -11,6 +12,7 @@ MAX_TIME = 0.2  # in seconds
 SHOW_EXCEPTIONS = False
 
 pytest_plugins = ["pytester"]
+
 
 @pytest.fixture
 def disable_logging_exception(mocker):
