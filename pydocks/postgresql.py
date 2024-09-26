@@ -39,6 +39,11 @@ TEST_POSTGRESQL_DOCKER_IMAGE: str = "docker.io/postgres:17rc1-alpine3.20"
 @pytest_asyncio.fixture(scope="session", loop_scope="session")
 async def postgresql_clean_all_containers(docker):
     container_name:str = "test-postgresql"
+    # clean before
+
+    await clean_containers(docker, container_name)
+    yield
+    # clean after
     await clean_containers(docker, container_name)
 
 @pytest.fixture(scope="function")
@@ -46,19 +51,22 @@ async def postgresql_container(docker: libdocker, mocker):  # type: ignore
     mocker.patch("logging.exception", lambda *args, **kwargs: logger.warning(f"Exception raised {args}"))
 
     container_name = f"test-postgresql-{uuid.uuid4()}"
-    await clean_containers(docker, container_name)
+    # await clean_containers(docker, container_name)
 
     async for container in setup_postgresql_container(docker, container_name):
         yield container
+    
 
 @pytest_asyncio.fixture(scope="session", loop_scope="session")
 async def postgresql_container_session(docker: libdocker, session_mocker):  # type: ignore
     session_mocker.patch("logging.exception", lambda *args, **kwargs: logger.warning(f"Exception raised {args}"))
+    
+    await clean_containers(docker, "test-postgresql-session")
+
     container_name = f"test-postgresql-session-{uuid.uuid4()}"
 
     async for container in setup_postgresql_container(docker, container_name):
         yield container
-    await clean_containers(docker, container_name)
 
 
 async def setup_postgresql_container(docker: libdocker, container_name):  # type: ignore
