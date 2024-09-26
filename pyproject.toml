@@ -1,0 +1,62 @@
+[project]
+name = "pydocks"
+version = "0.0.1"
+description = "Pytest fixures for running tests with Docker containers"
+authors = [{name = "Sylvain Mouquet", email = "sylvain.mouquet@gmail.com"}]
+readme = "README.md"
+requires-python = ">=3.9"
+dependencies = [
+    "reattempt>=1.0.10",
+    "python-on-whales>=0.73.0",
+]
+license = { text = "MIT" }
+url = "https://github.com/sylvainmouquet/pydocks"
+keywords = ["pytest", "docker", "test", "containers", "pydocks"]
+classifiers = [
+    "Development Status :: 5 - Production/Stable",
+    "Framework :: Pytest",
+    "Intended Audience :: Developers",
+    "License :: OSI Approved :: MIT License",
+    "Programming Language :: Python",
+    "Programming Language :: Python :: 3",
+    "Programming Language :: Python :: 3.9",
+    "Programming Language :: Python :: 3.10",
+    "Programming Language :: Python :: 3.11",
+    "Programming Language :: Python :: 3.12",
+    "Topic :: Software Development :: Libraries :: Python Modules"
+]
+
+[project.urls]
+homepage = "https://github.com/sylvainmouquet/pydocks"
+documentation = "https://github.com/sylvainmouquet/pydocks"
+repository = "https://github.com/sylvainmouquet/ppydocks"
+changelog = "https://github.com/sylvainmouquet/pydocks/releases"
+
+
+[build-system]
+requires = ["hatchling"]
+build-backend = "hatchling.build"
+
+[tool.uv]
+dev-dependencies = [
+    "anyio>=4.6.0",
+    "fastapi>=0.115.0",
+    "pytest-asyncio>=0.24.0",
+    "pytest-mock>=3.14.0",
+    "pytest>=8.3.3",
+    "ruff>=0.6.7",
+    "reattempt>=0.0.1",
+    "loguru>=0.7.2",
+]
+
+[project.optional-dependencies]
+postgresql = [
+    "asyncpg>=0.29.0",
+]
+
+
+[tool.uv.sources]
+pydocks = { path = "pydocks" }
+
+[project.entry-points.pytest11]
+pydocks = "pydocks"
