@@ -96,5 +96,5 @@ PyDocks is released under the MIT License. See the [LICENSE](LICENSE) file for m
 
 ## Contact
 
-For questions, suggestions, or issues related to ReAttempt, please open an issue on the GitHub repository.
+For questions, suggestions, or issues related to PyDocks, please open an issue on the GitHub repository.
 
