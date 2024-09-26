@@ -416,7 +416,6 @@ dev = [
     { name = "pytest-asyncio", specifier = ">=0.24.0" },
     { name = "pytest-mock", specifier = ">=3.14.0" },
     { name = "reattempt", specifier = ">=0.0.1" },
-    { name = "reattempt", specifier = ">=1.0.10" },
     { name = "ruff", specifier = ">=0.6.7" },
 ]
 

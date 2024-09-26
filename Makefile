@@ -29,6 +29,26 @@ check-version:
 		exit 1; \
 	fi
 
+.PHONY: check
+check: 
+	echo "Run pyright"
+	PYRIGHT_PYTHON_FORCE_VERSION=latest uv run pyright
+
+.PHONY: check-docker
+check-docker:
+	echo "check-docker"
+ifeq ($(strip $(CI)),)
+	echo "ci is not set"
+ifeq ($(shell uname),Darwin)
+# we use colima in MacOs
+		which colima &>/dev/null  || echo "You must install colima"
+		docker info > /dev/null 2>&1 || colima stop
+		docker info > /dev/null 2>&1 || colima start --cpu 4 --memory 12
+else
+	echo "docker must be started"
+endif
+endif
+
 # Deploy command
 .PHONY: deploy
 deploy:
@@ -41,7 +61,7 @@ install-local:
 
 # Test command
 .PHONY: test
-test:
+test: check-docker
 	uv run pytest -v --log-cli-level=INFO
 
 # Lint command
