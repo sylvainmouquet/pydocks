@@ -4,6 +4,8 @@ from pathlib import Path
 import os
 
 import socket
+
+import pytest_asyncio
 from asyncpg.pool import Pool
 from fastapi import FastAPI
 #from asgi_lifespan import LifespanManager
@@ -24,6 +26,7 @@ from unittest.mock import patch
 
 from pydocks.plugin import clean_containers, socket_test_connection, wait_and_run_container
 
+import asyncio
 
 logger = logging.getLogger("pydocks")
 logger.addHandler(logging.NullHandler())
@@ -33,25 +36,32 @@ logger.addHandler(logging.NullHandler())
 # TEST_POSTGRES_DOCKER_IMAGE: str = "docker.io/postgres:16.3"
 TEST_POSTGRESQL_DOCKER_IMAGE: str = "docker.io/postgres:17rc1-alpine3.20"
 
+@pytest_asyncio.fixture(scope="session", loop_scope="session")
+async def postgresql_clean_all_containers(docker):
+    container_name:str = "test-postgresql"
+    await clean_containers(docker, container_name)
+
 @pytest.fixture(scope="function")
-async def postgresql_container(docker: libdocker, mocker, request):  # type: ignore
+async def postgresql_container(docker: libdocker, mocker):  # type: ignore
     mocker.patch("logging.exception", lambda *args, **kwargs: logger.warning(f"Exception raised {args}"))
-    async for container in setup_postgresql_container(docker, request):
+
+    container_name = f"test-postgresql-{uuid.uuid4()}"
+    await clean_containers(docker, container_name)
+
+    async for container in setup_postgresql_container(docker, container_name):
         yield container
-    
-    
-@pytest.fixture(scope="session")
-@patch.object(logging, 'exception', lambda *args, **kwargs: logger.warning(f"Exception raised {args}"))
-async def postgresql_container_session(docker: libdocker,request):  # type: ignore
-    import asyncio
-    loop = asyncio.get_event_loop()
-    container = loop.run_until_complete(setup_postgresql_container(docker, request).__anext__())
-    async for container in setup_postgresql_container(docker, request):
+
+@pytest_asyncio.fixture(scope="session", loop_scope="session")
+async def postgresql_container_session(docker: libdocker, session_mocker):  # type: ignore
+    session_mocker.patch("logging.exception", lambda *args, **kwargs: logger.warning(f"Exception raised {args}"))
+    container_name = f"test-postgresql-session-{uuid.uuid4()}"
+
+    async for container in setup_postgresql_container(docker, container_name):
         yield container
-    loop.run_until_complete(clean_containers(docker, "test-postgresql"))
+    await clean_containers(docker, container_name)
 
 
-async def setup_postgresql_container(docker: libdocker, request):  # type: ignore
+async def setup_postgresql_container(docker: libdocker, container_name):  # type: ignore
     postgresql_image = TEST_POSTGRESQL_DOCKER_IMAGE if 'TEST_POSTGRESQL_DOCKER_IMAGE' not in os.environ else os.environ['TEST_POSTGRESQL_DOCKER_IMAGE']
     logger.debug(f"[PYDOCKS] Pull docker image : {postgresql_image}")
 
@@ -67,9 +77,15 @@ async def setup_postgresql_container(docker: libdocker, request):  # type: ignor
             expose=[5433],
         )
 
-    await clean_containers(docker, "test-postgresql")
 
-    container = run_container(f"test-postgresql-{uuid.uuid4()}")
+    # Select the container with the given name if exists, else create a new one
+    containers = docker.ps(all=True, filters={"name": f"^{container_name}$"})
+    if containers and len(containers) > 0:
+        container = containers[0] # type: ignore
+        logger.debug(f"[PYDOCKS] Found existing container: {container_name}")
+    else:
+        logger.debug(f"[PYDOCKS] No existing container found, creating new one: {container_name}")
+        container = run_container(container_name)
 
     await postgresql_test_connection(
         host="127.0.0.1",
@@ -79,12 +95,8 @@ async def setup_postgresql_container(docker: libdocker, request):  # type: ignor
         db_name="postgres",
     )
 
-    async for instance in wait_and_run_container(docker, container, "postgresql"):
+    async for instance in wait_and_run_container(docker, container, container_name):
         yield instance
-
-    if request.scope == "session":
-        # Clean up after session
-        await clean_containers(docker, "test-postgresql")
 
 
 @reattempt(max_retries=30, min_time=0.1, max_time=0.5)
