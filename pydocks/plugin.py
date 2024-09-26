@@ -56,8 +56,3 @@ async def wait_and_run_container(docker, container, name: str):
             logger.debug(f"killed container {name}")
         else:
             logger.debug(f"container {name} is not running")
-
-        # keep the container id, to keep the docker images
-        # docker has a garbage collector, when all docker container are deleted the
-        # image related is deleted
-        # docker.remove(container.id)
