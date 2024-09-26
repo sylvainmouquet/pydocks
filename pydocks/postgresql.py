@@ -76,7 +76,7 @@ async def setup_postgresql_container(docker: libdocker, container_name):  # type
         if "TEST_POSTGRESQL_DOCKER_IMAGE" not in os.environ
         else os.environ["TEST_POSTGRESQL_DOCKER_IMAGE"]
     )
-    logger.debug(f"[PYDOCKS] Pull docker image : {postgresql_image}")
+    logger.debug(f"pull docker image : {postgresql_image}")
 
     def run_container(container_name: str):
         return docker.run(
@@ -94,11 +94,9 @@ async def setup_postgresql_container(docker: libdocker, container_name):  # type
     containers = docker.ps(all=True, filters={"name": f"^{container_name}$"})
     if containers and len(containers) > 0:
         container = containers[0]  # type: ignore
-        logger.debug(f"[PYDOCKS] Found existing container: {container_name}")
+        logger.debug(f"found existing container: {container_name}")
     else:
-        logger.debug(
-            f"[PYDOCKS] No existing container found, creating new one: {container_name}"
-        )
+        logger.debug(f"no existing container found, creating new one: {container_name}")
         container = run_container(container_name)
 
     await postgresql_test_connection(
@@ -129,7 +127,7 @@ async def postgresql_test_connection(
     await stream.send(b"\x00")  # terminator byte
 
     await stream.receive()
-    logger.info("[PYDOCKS] Connection successful.")
+    logger.info("connection successful.")
     await stream.aclose()
 
     conn = await asyncpg.connect(
@@ -138,6 +136,6 @@ async def postgresql_test_connection(
     try:
         # Execute the SELECT 1 query
         result = await conn.fetchval("SELECT 1")
-        logger.info(f"[PYDOCKS] Query result: {result}")
+        logger.info(f"query result: {result}")
     finally:
         await conn.close()
