@@ -71,6 +71,18 @@ lint:
 	uv run ruff format
 	uv run ruff format --check
 
+
+# Update dependencies
+.PHONY: update
+update:
+	uv lock --upgrade
+	uv sync
+
+# Check for outdated dependencies
+.PHONY: check-deps
+check-deps:
+	.venv/bin/pip list --outdated
+
 # Display all available commands
 .PHONY: help
 help:
@@ -80,6 +92,8 @@ help:
 	@echo "  build         - Build the project"
 	@echo "  deploy        - Deploy the project"
 	@echo "  install-local - Install the build locally"
+	@echo "  update        - Update dependencies"
+	@echo "  check-deps    - Check for outdated dependencies"
 	@echo "  test          - Run tests"
 	@echo "  lint          - Run linter"
 	@echo "  help          - Display this help message"

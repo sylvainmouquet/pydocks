@@ -47,6 +47,7 @@ dev-dependencies = [
     "ruff>=0.6.7",
     "reattempt>=0.0.1",
     "loguru>=0.7.2",
+    "pip>=24.2",
 ]
 
 [project.optional-dependencies]
