@@ -1,5 +1,13 @@
 SHELL:=/bin/bash
 
+SUPPORTED_COMMANDS := test
+SUPPORTS_MAKE_ARGS := $(findstring $(firstword $(MAKECMDGOALS)), $(SUPPORTED_COMMANDS))
+ifneq "$(SUPPORTS_MAKE_ARGS)" ""
+  COMMAND_ARGS := $(wordlist 2,$(words $(MAKECMDGOALS)),$(MAKECMDGOALS))
+  COMMAND_ARGS := $(subst :,\:,$(COMMAND_ARGS))
+  $(eval $(COMMAND_ARGS):;@:)
+endif
+
 # Git workflow commands
 .PHONY: wip
 wip:
@@ -61,8 +69,13 @@ install-local:
 
 # Test command
 .PHONY: test
-test: check-docker
-	uv run pytest -v --log-cli-level=INFO
+test:
+	@echo "Modified arguments: $(new_args)"
+	@if [ -z "$(COMMAND_ARGS)" ]; then \
+		uv run --python $${PYTHON_VERSION:-3.13} pytest -v --log-cli-level=INFO; \
+	else \
+		uv run --python $${PYTHON_VERSION:-3.13} pytest -v --log-cli-level=INFO $(new_args); \
+	fi
 
 # Lint command
 .PHONY: lint
