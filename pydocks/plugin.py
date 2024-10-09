@@ -4,7 +4,6 @@ import os
 
 import socket
 
-# from asgi_lifespan import LifespanManager
 import anyio
 from python_on_whales import DockerClient
 from reattempt import reattempt
