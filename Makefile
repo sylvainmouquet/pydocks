@@ -18,7 +18,7 @@ wip:
 # Install command
 .PHONY: install
 install:
-	uv sync --all-extras --dev
+	uv sync --python $${PYTHON_VERSION:-3.13} --all-extras --dev
 	
 # Build command
 .PHONY: build
@@ -28,7 +28,7 @@ build: check-version
 	./scripts/version.sh "${VERSION}"
 	@cat pyproject.toml | grep version
 	@cat pydocks/__init__.py | grep version
-	uv build
+	uv build --python $${PYTHON_VERSION:-3.13}
 
 .PHONY: check-version
 check-version:
