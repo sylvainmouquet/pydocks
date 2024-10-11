@@ -47,7 +47,6 @@ dev-dependencies = [
     "reattempt>=0.0.1",
     "loguru>=0.7.2",
     "pip>=24.2",
-    "asyncpg>=0.29.0",
 ]
 
 [project.optional-dependencies]
@@ -58,6 +57,8 @@ postgresql = [
 
 [tool.uv.sources]
 pydocks = { path = "pydocks" }
+# asyncpg = { path = "../asyncpg" }
+asyncpg = { git = "https://github.com/MagicStack/asyncpg"}
 
 [project.entry-points.pytest11]
 pydocks = "pydocks"
