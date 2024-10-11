@@ -15,7 +15,7 @@ jobs:
     runs-on: ubuntu-latest
     strategy:
         matrix:
-          python-version: ['3.9', '3.10', '3.11', '3.12']
+          python-version: ['3.9', '3.10', '3.11', '3.12', '3.13']
     steps:
     - uses: actions/checkout@v3
     - name: Set up Python
@@ -28,7 +28,13 @@ jobs:
       run: uv venv --python ${{ matrix.python-version }}
     - name: Install dependencies
       run: make install
+      env:
+        PYTHON_VERSION: ${{ matrix.python-version }}
     - name: Build
       run: VERSION=0.0.1 make build
+      env:
+        PYTHON_VERSION: ${{ matrix.python-version }}
     - name: Run tests
       run: make test
+      env:
+        PYTHON_VERSION: ${{ matrix.python-version }}
