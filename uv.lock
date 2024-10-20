@@ -767,14 +767,10 @@ dependencies = [
     { name = "aiohttp" },
 ]
 
-[package.optional-dependencies]
-postgresql = [
-    { name = "asyncpg" },
-]
-
 [package.dev-dependencies]
 dev = [
     { name = "anyio" },
+    { name = "asyncpg" },
     { name = "loguru" },
     { name = "pip" },
     { name = "pytest" },
@@ -786,14 +782,12 @@ dev = [
 ]
 
 [package.metadata]
-requires-dist = [
-    { name = "aiohttp", specifier = ">=3.10.10" },
-    { name = "asyncpg", marker = "extra == 'postgresql'", specifier = ">=0.30" },
-]
+requires-dist = [{ name = "aiohttp", specifier = ">=3.10.10" }]
 
 [package.metadata.requires-dev]
 dev = [
     { name = "anyio", specifier = ">=4.6.0" },
+    { name = "asyncpg", specifier = ">=0.30" },
     { name = "loguru", specifier = ">=0.7.2" },
     { name = "pip", specifier = ">=24.2" },
     { name = "pytest", specifier = ">=8.3.3" },

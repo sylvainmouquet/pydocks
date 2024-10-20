@@ -11,7 +11,8 @@ import uuid
 from pydocks.plugin import (
     clean_containers,
     socket_test_connection,
-    wait_and_run_container, file_exists,
+    wait_and_run_container,
+    file_exists,
 )
 
 
@@ -79,6 +80,7 @@ async def setup_vault_container(docker: libdocker, container_name):  # type: ign
             envs={
                 "VAULT_DEV_ROOT_TOKEN_ID": "00000000-0000-0000-0000-000000000000",
                 "VAULT_TOKEN": "00000000-0000-0000-0000-000000000000",
+                "VAULT_ADDR": "http://127.0.0.1:8200"
             },
             command=["/test-vault-init.sh"],
             publish=[(8200, 8200)],
