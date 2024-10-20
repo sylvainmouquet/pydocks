@@ -35,6 +35,7 @@ runs:
           ping -c 2 host.docker.internal
 
           make test
+        fi
         # elif [ "$RUNNER_OS" == "macOS" ]; then
         #   # ifconfig
         #   docker_ip=$(ifconfig en0 | awk '/inet / {print $2}')
