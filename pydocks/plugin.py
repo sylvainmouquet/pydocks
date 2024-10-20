@@ -15,11 +15,11 @@ logger.addHandler(logging.NullHandler())
 
 @pytest.fixture(scope="session", autouse=True)
 def docker():
-    if "DOCKER_SOCK" in os.environ:
-        yield DockerClient(host=os.environ["DOCKER_SOCK"])
-    elif "CI" in os.environ:
+    if "CI" in os.environ:
         # Github Actions, GitLab CI, ...
         yield DockerClient()
+    elif "DOCKER_SOCK" in os.environ:
+        yield DockerClient(host=os.environ["DOCKER_SOCK"])
     else:
         # local with colima
         home: str = str(Path.home())

@@ -45,8 +45,9 @@ runs:
 
         elif [ "$RUNNER_OS" == "Windows" ]; then
           # .\.venv\Scripts\activate
-          ipconfig
-          echo "172.17.0.1 host.docker.internal" | Out-File -Append -FilePath $env:windir\System32\drivers\etc\hosts
+          $ipConfig = ipconfig | Select-String -Pattern 'IPv4 Address' | Select-Object -First 1
+          $ipAddress = ($ipConfig -split ':')[-1].Trim()
+          Add-Content -Path "$env:windir\System32\drivers\etc\hosts" -Value "$ipAddress host.docker.internal"
           Test-Connection -ComputerName host.docker.internal -Count 2
         fi
         
