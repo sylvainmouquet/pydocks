@@ -45,9 +45,9 @@ runs:
 
         elif [ "$RUNNER_OS" == "Windows" ]; then
           # .\.venv\Scripts\activate
-          $ipConfig = ipconfig | Select-String -Pattern 'IPv4 Address' | Select-Object -First 1
-          $ipAddress = $ipConfig -split ':' | Select-Object -Last 1 | ForEach-Object { $_.Trim() }
-          Add-Content -Path "$env:windir\System32\drivers\etc\hosts" -Value "$ipAddress host.docker.internal"
+          # $ipConfig = ipconfig | Select-String -Pattern 'IPv4 Address' | Select-Object -First 1
+          # $ipAddress = $ipConfig -split ':' | Select-Object -Last 1 | ForEach-Object { $_.Trim() }
+          # Add-Content -Path "$env:windir\System32\drivers\etc\hosts" -Value "$ipAddress host.docker.internal"
           Test-Connection -ComputerName host.docker.internal -Count 2
         fi
         
