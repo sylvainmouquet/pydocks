@@ -70,11 +70,11 @@ install-local:
 # Test command
 .PHONY: test
 test: check-docker
-	@echo "Modified arguments: $(new_args)"
+	@echo "Modified arguments: $(COMMAND_ARGS)"
 	@if [ -z "$(COMMAND_ARGS)" ]; then \
 		uv run --python $${PYTHON_VERSION:-3.13} pytest -v --log-cli-level=INFO; \
 	else \
-		uv run --python $${PYTHON_VERSION:-3.13} pytest -v --log-cli-level=INFO $(new_args); \
+		uv run --python $${PYTHON_VERSION:-3.13} pytest -v --log-cli-level=INFO $(COMMAND_ARGS); \
 	fi
 
 # Lint command

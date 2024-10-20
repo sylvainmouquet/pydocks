@@ -1,14 +1,15 @@
 [project]
 name = "pydocks"
-version = "1.0.1"
+version = "1.0.2"
 description = "Pytest fixures for running tests with Docker containers"
 authors = [{name = "Sylvain Mouquet", email = "sylvain.mouquet@gmail.com"}]
 readme = "README.md"
 requires-python = ">=3.9"
-dependencies = []
+dependencies = [
+]
 license = { text = "MIT" }
 url = "https://github.com/sylvainmouquet/pydocks"
-keywords = ["pytest", "docker", "test", "containers", "pydocks"]
+keywords = ["pytest", "docker", "test", "containers", "pydocks", "postgresql", "vault"]
 classifiers = [
     "Development Status :: 5 - Production/Stable",
     "Framework :: Pytest",
@@ -38,6 +39,7 @@ build-backend = "hatchling.build"
 [tool.uv]
 dev-dependencies = [
     "anyio>=4.6.0",
+    "asyncpg>=0.30",
     "reattempt>=1.0.10",
     "python-on-whales>=0.73.0",
     "pytest-asyncio>=0.24.0",
@@ -47,13 +49,13 @@ dev-dependencies = [
     "reattempt>=0.0.1",
     "loguru>=0.7.2",
     "pip>=24.2",
+    "aiohttp>=3.10.10",
 ]
 
-[project.optional-dependencies]
-postgresql = [
-    "asyncpg>=0.30",
-]
-
+#[project.optional-dependencies]
+#postgresql = [
+#    "asyncpg>=0.30",
+#]
 
 [tool.uv.sources]
 pydocks = { path = "pydocks" }

@@ -33,6 +33,17 @@ async def socket_test_connection(host, port):
     await anyio.wait_socket_writable(s)
 
 
+@reattempt(max_retries=30, min_time=0.1, max_time=0.5)
+async def file_exists(container, filepath):
+    result = container.execute(
+        ["sh", "-c", f'test -e {filepath} && echo "ok" || echo "ko"']
+    )
+    if result == "ko":
+        raise FileNotFoundError(
+            f"[WARNING] File {filepath} does not exist in the container"
+        )
+
+
 async def clean_containers(docker: DockerClient, name: str):
     containers = docker.ps(all=True, filters={"name": f"^{name}"})
 
