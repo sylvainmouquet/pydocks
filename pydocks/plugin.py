@@ -15,7 +15,6 @@ logger.addHandler(logging.NullHandler())
 
 @pytest.fixture(scope="session", autouse=True)
 def docker():
-
     if "DOCKER_SOCK" in os.environ:
         yield DockerClient(host=os.environ["DOCKER_SOCK"])
     elif "CI" in os.environ:
