@@ -5,7 +5,9 @@ description = "Pytest fixures for running tests with Docker containers"
 authors = [{name = "Sylvain Mouquet", email = "sylvain.mouquet@gmail.com"}]
 readme = "README.md"
 requires-python = ">=3.9"
-dependencies = []
+dependencies = [
+    "aiohttp>=3.10.10",
+]
 license = { text = "MIT" }
 url = "https://github.com/sylvainmouquet/pydocks"
 keywords = ["pytest", "docker", "test", "containers", "pydocks"]

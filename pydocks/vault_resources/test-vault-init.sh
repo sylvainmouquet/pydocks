@@ -26,9 +26,14 @@ vault write auth/approle/role/my-app-role \
 ROLE_ID=$(vault read auth/approle/role/my-app-role/role-id | grep role_id | awk -F ' ' '{print $2}')
 SECRET_ID=$(vault write -f auth/approle/role/my-app-role/secret-id | grep secret_id | awk -F ' ' '{print $2}' | head -1)
 
-
 vault write auth/approle/login \
   role_id=${ROLE_ID} \
   secret_id=${SECRET_ID}
 
+# Save ROLE_ID and SECRET_ID in an env file
+echo "ROLE_ID=${ROLE_ID}" > /vault-credentials.env
+echo "SECRET_ID=${SECRET_ID}" >> /vault-credentials.env
+echo "Credentials saved to /vault-credentials.env"
+
+echo "YES" > /started
 sleep 10000

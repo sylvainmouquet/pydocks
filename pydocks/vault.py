@@ -3,19 +3,15 @@ import os
 
 
 import pytest_asyncio
-import asyncpg
-import anyio
 from python_on_whales import docker as libdocker
 from reattempt import reattempt
 import logging
-import struct
-from anyio.abc import SocketStream
 import uuid
 
 from pydocks.plugin import (
     clean_containers,
     socket_test_connection,
-    wait_and_run_container,
+    wait_and_run_container, file_exists,
 )
 
 
@@ -89,11 +85,17 @@ async def setup_vault_container(docker: libdocker, container_name):  # type: ign
             expose=[8200],
             volumes=[
                 (
-                    os.path.join(os.path.dirname(__file__), "vault_resources", "test-vault-init.sh"),
+                    os.path.join(
+                        os.path.dirname(__file__),
+                        "vault_resources",
+                        "test-vault-init.sh",
+                    ),
                     "/test-vault-init.sh",
                 ),
                 (
-                    os.path.join(os.path.dirname(__file__), "vault_resources", 'vault-test.json'),
+                    os.path.join(
+                        os.path.dirname(__file__), "vault_resources", "vault-test.json"
+                    ),
                     "/vault-test.json",
                 ),
             ],
@@ -108,12 +110,13 @@ async def setup_vault_container(docker: libdocker, container_name):  # type: ign
         logger.debug(f"no existing container found, creating new one: {container_name}")
         container = run_container(container_name)
 
-    await vault_test_connection()
+    await vault_test_connection(container)
 
     async for instance in wait_and_run_container(docker, container, container_name):
         yield instance
 
 
 @reattempt(max_retries=30, min_time=0.1, max_time=0.5)
-async def vault_test_connection():
+async def vault_test_connection(container):
     await socket_test_connection("host.docker.internal", 8200)
+    await file_exists(container, "/started")
