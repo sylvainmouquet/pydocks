@@ -8,6 +8,9 @@ __all__ = (
     "vault_clean_all_containers",
     "vault_container",
     "vault_container_session",
+    "redis_clean_all_containers",
+    "redis_container",
+    "redis_container_session",
 )
 
 # pytest_plugins = ["pydocks.conftest"]
@@ -22,4 +25,10 @@ from pydocks.vault import (
     vault_clean_all_containers,
     vault_container,
     vault_container_session,
+)
+
+from pydocks.redis import (
+    redis_clean_all_containers,
+    redis_container,
+    redis_container_session,
 )

@@ -6,6 +6,7 @@ authors = [{name = "Sylvain Mouquet", email = "sylvain.mouquet@gmail.com"}]
 readme = "README.md"
 requires-python = ">=3.9"
 dependencies = [
+    "redis>=5.1.1",
 ]
 license = { text = "MIT" }
 url = "https://github.com/sylvainmouquet/pydocks"
