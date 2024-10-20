@@ -36,6 +36,8 @@ runs:
 
         elif [ "$RUNNER_OS" == "macOS" ]; then
           # ifconfig
+          sudo ln -s ~/.docker/run/docker.sock /var/run/docker.sock
+          
           docker_ip=$(ifconfig en0 | awk '/inet / {print $2}')
           echo "Docker IP: $docker_ip"
 
