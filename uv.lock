@@ -40,8 +40,8 @@ wheels = [
 
 [[package]]
 name = "asyncpg"
-version = "0.30.0.dev0+f6ec755"
-source = { git = "https://github.com/MagicStack/asyncpg#f6ec755cab771682c5cc9b881a67097691415636" }
+version = "0.30.0"
+source = { git = "https://github.com/MagicStack/asyncpg#bae282ec79157ca1e0018ea0753edefe14c9d50c" }
 dependencies = [
     { name = "async-timeout", marker = "python_full_version < '3.11'" },
 ]
