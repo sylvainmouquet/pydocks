@@ -43,7 +43,8 @@ runs:
           source .venv/bin/activate
           sudo echo "$docker_ip host.docker.internal" | sudo tee -a /etc/hosts
           ping -c 2 host.docker.internal
-        
+          
+          find / -name docker.sock
           DOCKER_SOCK=~/.docker/run/docker.sock make test
         elif [ "$RUNNER_OS" == "Windows" ]; then
           # .\.venv\Scripts\activate
