@@ -1,6 +1,6 @@
 [project]
 name = "pydocks"
-version = "1.0.1"
+version = "1.0.2"
 description = "Pytest fixures for running tests with Docker containers"
 authors = [{name = "Sylvain Mouquet", email = "sylvain.mouquet@gmail.com"}]
 readme = "README.md"
@@ -10,7 +10,7 @@ dependencies = [
 ]
 license = { text = "MIT" }
 url = "https://github.com/sylvainmouquet/pydocks"
-keywords = ["pytest", "docker", "test", "containers", "pydocks"]
+keywords = ["pytest", "docker", "test", "containers", "pydocks", "postgresql", "vault"]
 classifiers = [
     "Development Status :: 5 - Production/Stable",
     "Framework :: Pytest",

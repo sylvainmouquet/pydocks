@@ -42,7 +42,7 @@ PyDocks is a Python library that provides a set of pytest fixtures for running t
 
 Key features include:
 - Easy integration with pytest
-- Support for PostgreSQL containers
+- Support for PostgreSQL, Hashicorp Vault containers
 - Automatic container cleanup
 - Configurable container settings
 - Reusable session-scoped containers for improved test performance
