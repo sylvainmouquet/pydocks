@@ -5,12 +5,11 @@ description = "Pytest fixures for running tests with Docker containers"
 authors = [{name = "Sylvain Mouquet", email = "sylvain.mouquet@gmail.com"}]
 readme = "README.md"
 requires-python = ">=3.9"
-dependencies = [
-    "redis>=5.1.1",
-]
+dependencies = []
+
 license = { text = "MIT" }
 url = "https://github.com/sylvainmouquet/pydocks"
-keywords = ["pytest", "docker", "test", "containers", "pydocks", "postgresql", "vault"]
+keywords = ["pytest", "docker", "test", "containers", "pydocks", "postgresql", "vault", "redis"]
 classifiers = [
     "Development Status :: 5 - Production/Stable",
     "Framework :: Pytest",
@@ -52,11 +51,6 @@ dev-dependencies = [
     "pip>=24.2",
     "aiohttp>=3.10.10",
 ]
-
-#[project.optional-dependencies]
-#postgresql = [
-#    "asyncpg>=0.30",
-#]
 
 [tool.uv.sources]
 pydocks = { path = "pydocks" }
