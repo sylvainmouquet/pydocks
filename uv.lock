@@ -763,9 +763,6 @@ wheels = [
 name = "pydocks"
 version = "1.0.2"
 source = { editable = "." }
-dependencies = [
-    { name = "redis" },
-]
 
 [package.dev-dependencies]
 dev = [
@@ -779,11 +776,11 @@ dev = [
     { name = "pytest-mock" },
     { name = "python-on-whales" },
     { name = "reattempt" },
+    { name = "redis" },
     { name = "ruff" },
 ]
 
 [package.metadata]
-requires-dist = [{ name = "redis", specifier = ">=5.1.1" }]
 
 [package.metadata.requires-dev]
 dev = [
@@ -798,6 +795,7 @@ dev = [
     { name = "python-on-whales", specifier = ">=0.73.0" },
     { name = "reattempt", specifier = ">=0.0.1" },
     { name = "reattempt", specifier = ">=1.0.10" },
+    { name = "redis", specifier = ">=5.1.1" },
     { name = "ruff", specifier = ">=0.6.7" },
 ]
 
