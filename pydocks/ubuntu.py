@@ -77,8 +77,6 @@ async def setup_ubuntu_container(docker: libdocker, container_name):  # type: ig
             entrypoint="/bin/sh",
             command=["-c", "sleep 60"],
         )
-        # docker.run(image=IMAGE_DOCKER, command=["-c", sleep], name=f"test-opentofu-{uuid.uuid4()}",
-        #                      detach=True, entrypoint="/bin/sh", add_hosts=addHosts)
 
     # Select the container with the given name if exists, else create a new one
     containers = docker.ps(all=True, filters={"name": f"^{container_name}$"})
