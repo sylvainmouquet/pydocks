@@ -4,13 +4,11 @@ import os
 
 import pytest_asyncio
 from python_on_whales import docker as libdocker
-from reattempt import reattempt
 import logging
 import uuid
 
 from pydocks.plugin import (
     clean_containers,
-    socket_test_connection,
     wait_and_run_container,
 )
 
@@ -93,5 +91,3 @@ async def setup_ubuntu_container(docker: libdocker, container_name):  # type: ig
 
     async for instance in wait_and_run_container(docker, container, container_name):
         yield instance
-
-
