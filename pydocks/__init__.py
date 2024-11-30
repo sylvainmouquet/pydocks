@@ -11,6 +11,9 @@ __all__ = (
     "redis_clean_all_containers",
     "redis_container",
     "redis_container_session",
+    "ubuntu_clean_all_containers",
+    "ubuntu_container",
+    "ubuntu_container_session",
 )
 
 # pytest_plugins = ["pydocks.conftest"]
@@ -31,4 +34,10 @@ from pydocks.redis import (
     redis_clean_all_containers,
     redis_container,
     redis_container_session,
+)
+
+from pydocks.ubuntu import (
+    ubuntu_clean_all_containers,
+    ubuntu_container,
+    ubuntu_container_session,
 )
