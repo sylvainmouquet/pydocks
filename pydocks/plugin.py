@@ -30,7 +30,7 @@ def docker():
 async def socket_test_connection(host, port):
     s = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
     s.connect((host, port))
-    await anyio.wait_socket_writable(s)
+    await anyio.wait_writable(s)
 
 
 @reattempt(max_retries=30, min_time=0.1, max_time=0.5)
