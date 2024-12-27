@@ -16,6 +16,7 @@ from pydocks.plugin import (
     clean_containers,
     socket_test_connection,
     wait_and_run_container,
+    wait_port_available,
 )
 
 
@@ -87,6 +88,8 @@ async def setup_postgresql_container(docker: libdocker, container_name):  # type
             publish=[(5433, 5432)],
             expose=[5433],
         )
+
+    await wait_port_available(host="localhost", port=5433)
 
     # Select the container with the given name if exists, else create a new one
     containers = docker.ps(all=True, filters={"name": f"^{container_name}$"})
