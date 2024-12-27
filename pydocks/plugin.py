@@ -69,6 +69,15 @@ async def wait_and_run_container(docker, container, name: str):
 
 
 async def wait_port_available(host: str, port: int):
-    while not socket_test_connection(host=host, port=port):
+
+    async def _socket_test_connection():
+        try:
+            s = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
+            s.connect((host, port))
+            await anyio.wait_writable(s)
+        except:
+            pass
+
+    while await _socket_test_connection():
         logger.info(f"waiting for port {port}")
         await anyio.sleep(1)
