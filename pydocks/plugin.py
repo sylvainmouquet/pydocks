@@ -66,3 +66,9 @@ async def wait_and_run_container(docker, container, name: str):
             logger.debug(f"killed container {name}")
         else:
             logger.debug(f"container {name} is not running")
+
+
+async def wait_port_available(host: str, port: int):
+    while not socket_test_connection(host=host, port=port):
+        logger.info(f"waiting for port {port}")
+        await anyio.sleep(1)
