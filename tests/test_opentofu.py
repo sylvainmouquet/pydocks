@@ -13,7 +13,7 @@ async def begin_clean_all_containers(opentofu_clean_all_containers):
 async def test_opentofu_default_version(opentofu_container):
     version_output = opentofu_container.execute(["tofu", "version"])
     assert (
-        "OpenTofu v1.6.2" in version_output
+        "OpenTofu v1.9.0" in version_output
     ), f"Unexpected version output: {version_output}"
 
 
@@ -28,7 +28,7 @@ def custom_opentofu_version():
 async def test_opentofu_custom_version(custom_opentofu_version, opentofu_container):
     version_output = opentofu_container.execute(["tofu", "version"])
     assert (
-        "OpenTofu v1.9.0" in version_output
+        "OpenTofu v1.6.0" in version_output
     ), f"Unexpected version output: {version_output}"
 
 
@@ -51,7 +51,7 @@ EOF
 
     # Initialize OpenTofu
     init_result = opentofu_container.execute(["tofu", "init"])
-    assert "Terraform has been successfully initialized" in init_result
+    assert "OpenTofu has been successfully initialized" in init_result
 
     # Apply the configuration
     apply_result = opentofu_container.execute(["tofu", "apply", "-auto-approve"])
