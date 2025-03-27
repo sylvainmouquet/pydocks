@@ -14,6 +14,9 @@ __all__ = (
     "ubuntu_clean_all_containers",
     "ubuntu_container",
     "ubuntu_container_session",
+    "opentofu_clean_all_containers",
+    "opentofu_container",
+    "opentofu_container_session",
 )
 
 # pytest_plugins = ["pydocks.conftest"]
@@ -40,4 +43,10 @@ from pydocks.ubuntu import (
     ubuntu_clean_all_containers,
     ubuntu_container,
     ubuntu_container_session,
+)
+
+from pydocks.opentofu import (
+    opentofu_clean_all_containers,
+    opentofu_container,
+    opentofu_container_session,
 )
