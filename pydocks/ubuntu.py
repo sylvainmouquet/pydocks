@@ -70,7 +70,8 @@ async def setup_ubuntu_container(docker: libdocker, container_name):  # type: ig
     logger.debug(f"[UBUNTU] pull docker image : {ubuntu_image}")
 
     def run_container(container_name: str):
-        command = f"sleep {int(os.getenv("UBUNTU_SLEEP_TIME_IN_SECONDS", 60))}"
+        UBUNTU_SLEEP_TIME_IN_SECONDS = int(os.getenv("UBUNTU_SLEEP_TIME_IN_SECONDS", 60))
+        command = f"sleep {UBUNTU_SLEEP_TIME_IN_SECONDS}"
         logger.debug(f"[UBUNTU] run container with {command}")
         return docker.run(
             image=ubuntu_image,
