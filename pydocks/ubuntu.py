@@ -67,24 +67,27 @@ async def setup_ubuntu_container(docker: libdocker, container_name):  # type: ig
         if "TEST_UBUNTU_DOCKER_IMAGE" not in os.environ
         else os.environ["TEST_UBUNTU_DOCKER_IMAGE"]
     )
-    logger.debug(f"pull docker image : {ubuntu_image}")
+    logger.debug(f"[UBUNTU] pull docker image : {ubuntu_image}")
 
     def run_container(container_name: str):
+        UBUNTU_SLEEP_TIME_IN_SECONDS = int(os.getenv("UBUNTU_SLEEP_TIME_IN_SECONDS", 60))
+        command = f"sleep {UBUNTU_SLEEP_TIME_IN_SECONDS}"
+        logger.debug(f"[UBUNTU] run container with {command}")
         return docker.run(
             image=ubuntu_image,
             name=container_name,
             detach=True,
             entrypoint="/bin/sh",
-            command=["-c", "sleep 60"],
+            command=["-c", command],
         )
 
     # Select the container with the given name if exists, else create a new one
     containers = docker.ps(all=True, filters={"name": f"^{container_name}$"})
     if containers and len(containers) > 0:
         container = containers[0]  # type: ignore
-        logger.debug(f"found existing container: {container_name}")
+        logger.debug(f"[UBUNTU] found existing container: {container_name}")
     else:
-        logger.debug(f"no existing container found, creating new one: {container_name}")
+        logger.debug(f"[UBUNTU] no existing container found, creating new one: {container_name}")
         container = run_container(container_name)
 
     async for instance in wait_and_run_container(docker, container, container_name):
