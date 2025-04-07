@@ -5,6 +5,9 @@ PyDocks is a group of pytest fixures for running tests with Docker containers
 ### Demonstration:
 
 ```python
+import pytest
+import asyncpg
+
 @pytest.mark.asyncio
 async def test_postgresql_execute_command(postgresql_container):
     # Connect to the PostgreSQL database
@@ -62,7 +65,9 @@ poetry add pydocks
 
 ### Remove all old containers
 ```python
+import pytest
 import pytest_asyncio
+from loguru import logger
 
 @pytest_asyncio.fixture(scope="session", loop_scope="session", autouse=True)
 async def begin_clean_all_containers(postgresql_clean_all_containers):
@@ -71,6 +76,8 @@ async def begin_clean_all_containers(postgresql_clean_all_containers):
 
 ### Use a function container
 ```python
+import pytest
+
 @pytest.mark.asyncio
 async def test_postgresql_execute_command(postgresql_container):
   ...
@@ -78,6 +85,8 @@ async def test_postgresql_execute_command(postgresql_container):
 
 ### Use a session container, to keep the container to use it in multiple tests
 ```python
+import pytest
+
 @pytest.mark.asyncio(loop_scope="session")
 async def test_reuse_postgresql_container_1_2(postgresql_container_session):
   ...
