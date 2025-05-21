@@ -16,10 +16,10 @@ keywords = [
     "opentofu",
     "postgresql",
     "pydocks",
-    "pytest",
     "redis",
     "test",
     "ubuntu",
+    "valkey",
     "vault"
 ]
 classifiers = [

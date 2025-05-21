@@ -45,7 +45,7 @@ PyDocks is a Python library that provides a set of pytest fixtures for running t
 
 Key features include:
 - Easy integration with pytest
-- Support for PostgreSQL, Hashicorp Vault containers, Redis
+- Support for PostgreSQL, Hashicorp Vault, Redis, Valkey, and more
 - Automatic container cleanup
 - Configurable container settings
 - Reusable session-scoped containers for improved test performance
@@ -98,6 +98,17 @@ async def test_reuse_postgresql_container_2_2(postgresql_container_session):
   # postgresql_container_session uses the same instance of container created in test_reuse_postgresql_container_1_2
 ```
 
+### Available Containers
+
+PyDocks provides fixtures for the following Docker containers:
+
+- **PostgreSQL**: `postgresql_container`, `postgresql_container_session`, `postgresql_clean_all_containers`
+- **Redis**: `redis_container`, `redis_container_session`, `redis_clean_all_containers`
+- **Valkey**: `valkey_container`, `valkey_container_session`, `valkey_clean_all_containers`
+- **Hashicorp Vault**: `vault_container`, `vault_container_session`, `vault_clean_all_containers`
+- **Ubuntu**: `ubuntu_container`, `ubuntu_container_session`, `ubuntu_clean_all_containers`
+- **Alpine**: `alpine_container`, `alpine_container_session`, `alpine_clean_all_containers`
+- **OpenTofu**: `opentofu_container`, `opentofu_container_session`, `opentofu_clean_all_containers`
 
 ## License
 
@@ -106,4 +117,3 @@ PyDocks is released under the MIT License. See the [LICENSE](LICENSE) file for m
 ## Contact
 
 For questions, suggestions, or issues related to PyDocks, please open an issue on the GitHub repository.
-

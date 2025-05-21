@@ -20,6 +20,9 @@ __all__ = (
     "alpine_clean_all_containers",
     "alpine_container",
     "alpine_container_session",
+    "valkey_clean_all_containers",
+    "valkey_container",
+    "valkey_container_session",
 )
 
 # pytest_plugins = ["pydocks.conftest"]
@@ -58,4 +61,10 @@ from pydocks.alpine import (
     alpine_clean_all_containers,
     alpine_container,
     alpine_container_session,
+)
+
+from pydocks.valkey import (
+    valkey_clean_all_containers,
+    valkey_container,
+    valkey_container_session,
 )
