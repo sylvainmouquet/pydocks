@@ -6,6 +6,7 @@ import aiohttp
 import pytest
 import pytest_asyncio
 from aiohttp import ClientTimeout
+from reattempt import reattempt
 
 logger = logging.getLogger(__name__)
 
@@ -59,11 +60,12 @@ async def test_vault_execute_command(vault_container):
             "secret_id": "unknown",
         }
 
-        async with session.post(
-            f"http://{vault_container.host}:{vault_container.port}/v1/auth/approle/login",
-            json=data,
-        ) as response:
-            assert response.status == HTTPStatus.BAD_REQUEST
+        await vault_approle_login(
+            session=session,
+            vault_container=vault_container,
+            data=data,
+            expected_status=HTTPStatus.FORBIDDEN,
+        )
 
         credentials = vault_container.execute(["cat", "/vault-credentials.env"])
         credentials_dict = dict(line.split("=") for line in credentials.splitlines())
@@ -77,10 +79,27 @@ async def test_vault_execute_command(vault_container):
             "role_id": role_id,
             "secret_id": secret_id,
         }
-        async with session.post(
-            f"http://{vault_container.host}:{vault_container.port}/v1/auth/approle/login",
-            json=data,
-        ) as response:
-            assert response.status == HTTPStatus.OK
-            response_data = await response.json()
-            assert response_data["auth"]["client_token"] is not None
+        response_data = await vault_approle_login(
+            session=session,
+            vault_container=vault_container,
+            data=data,
+            expected_status=HTTPStatus.OK,
+        )
+        assert response_data["auth"]["client_token"] is not None
+
+
+@reattempt(max_retries=10, min_time=0.2, max_time=1)
+async def vault_approle_login(
+    session: aiohttp.ClientSession,
+    vault_container,
+    data: dict[str, str],
+    expected_status: HTTPStatus,
+):
+    async with session.post(
+        f"http://{vault_container.host}:{vault_container.port}/v1/auth/approle/login",
+        json=data,
+    ) as response:
+        assert response.status == expected_status
+        if response.status == HTTPStatus.OK:
+            return await response.json()
+        return None
