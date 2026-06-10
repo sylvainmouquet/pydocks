@@ -1,6 +1,6 @@
 [project]
 name = "pydocks"
-version = "1.0.2"
+version = "2.0.0"
 description = "Pytest fixures for running tests with Docker containers"
 authors = [{name = "Sylvain Mouquet", email = "sylvain.mouquet@gmail.com"}]
 readme = "README.md"
