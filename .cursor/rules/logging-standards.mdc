@@ -1,0 +1,375 @@
+# Cursor Rules: Logging Standards for Python Projects
+
+## Purpose
+
+Ensure all generated Python code has consistent, useful, and production-ready logging that helps diagnose issues, trace execution flow, and monitor application health.
+
+---
+
+## General Logging Rules
+
+- Use Python's built-in `logging` module.
+- Never use `print()` for application logging.
+- Create one logger per module:
+
+```python
+import logging
+
+logger = logging.getLogger(__name__)
+```
+
+- Log significant operations at start, success, and failure.
+- Include relevant context such as:
+  - operation name
+  - request ID
+  - user ID (if applicable and safe)
+  - file path
+  - resource ID
+  - duration
+  - retry count
+
+- Never log:
+  - passwords
+  - API keys
+  - access tokens
+  - session cookies
+  - secrets
+  - full personal information
+
+- Use structured logging whenever possible.
+- Keep log messages concise and searchable.
+- Avoid excessive logging in loops or frequently executed code paths.
+
+---
+
+## Log Levels
+
+### DEBUG
+
+Use for detailed developer diagnostics.
+
+Examples:
+- Function entry/exit
+- Internal state transitions
+- Configuration values (non-sensitive)
+
+```python
+logger.debug("Loading configuration")
+```
+
+### INFO
+
+Use for normal application events.
+
+Examples:
+- Request received
+- File processed
+- Job completed
+
+```python
+logger.info("Document indexed successfully")
+```
+
+### WARNING
+
+Use for unexpected but recoverable situations.
+
+Examples:
+- Retry attempt
+- Missing optional data
+- Fallback behavior
+
+```python
+logger.warning("Primary cache unavailable, using fallback")
+```
+
+### ERROR
+
+Use when an operation fails.
+
+Examples:
+- API request failure
+- Database write failure
+- Validation failure
+
+```python
+logger.error("Failed to save document")
+```
+
+### EXCEPTION
+
+Use inside exception handlers to automatically include stack traces.
+
+```python
+try:
+    ...
+except Exception:
+    logger.exception("Document processing failed")
+    raise
+```
+
+### CRITICAL
+
+Use only when the application cannot continue safely.
+
+```python
+logger.critical("Database unavailable during startup")
+```
+
+---
+
+## Required Logging Pattern
+
+```python
+import logging
+import time
+
+logger = logging.getLogger(__name__)
+
+def process_document(document_id: str) -> None:
+    start = time.perf_counter()
+
+    logger.info(
+        "Starting document processing",
+        extra={"document_id": document_id},
+    )
+
+    try:
+        # business logic
+
+        duration_ms = round(
+            (time.perf_counter() - start) * 1000
+        )
+
+        logger.info(
+            "Document processing completed",
+            extra={
+                "document_id": document_id,
+                "duration_ms": duration_ms,
+            },
+        )
+
+    except Exception:
+        duration_ms = round(
+            (time.perf_counter() - start) * 1000
+        )
+
+        logger.exception(
+            "Document processing failed",
+            extra={
+                "document_id": document_id,
+                "duration_ms": duration_ms,
+            },
+        )
+
+        raise
+```
+
+---
+
+## API Logging
+
+Log:
+
+- Request start
+- Request completion
+- Response status code
+- Duration
+- Request identifier
+
+Example:
+
+```python
+logger.info(
+    "API request completed",
+    extra={
+        "method": "GET",
+        "endpoint": "/documents",
+        "status_code": 200,
+        "duration_ms": 152,
+    },
+)
+```
+
+Do not log:
+
+- Authorization headers
+- Tokens
+- Sensitive request payloads
+
+---
+
+## Database Logging
+
+Log:
+
+- Query execution start
+- Query execution duration
+- Transaction failures
+
+Example:
+
+```python
+logger.info(
+    "Database query completed",
+    extra={
+        "operation": "insert_document",
+        "duration_ms": 42,
+    },
+)
+```
+
+Do not log:
+
+- Raw credentials
+- Sensitive user data
+
+---
+
+## File Operations
+
+Log:
+
+- File reads
+- File writes
+- File deletions
+- Processing duration
+
+Example:
+
+```python
+logger.info(
+    "File saved",
+    extra={
+        "path": file_path,
+        "size_bytes": file_size,
+    },
+)
+```
+
+---
+
+## Background Jobs
+
+Log:
+
+- Job start
+- Job completion
+- Retry attempts
+- Job failure
+- Execution duration
+
+Example:
+
+```python
+logger.info(
+    "Background job started",
+    extra={"job_id": job_id},
+)
+```
+
+---
+
+## Performance Logging
+
+For operations expected to exceed 100ms:
+
+- Record execution duration.
+- Log duration in milliseconds.
+
+Example:
+
+```python
+duration_ms = round(
+    (time.perf_counter() - start) * 1000
+)
+
+logger.info(
+    "Operation completed",
+    extra={"duration_ms": duration_ms},
+)
+```
+
+---
+
+## Error Handling Rules
+
+- Never silently catch exceptions.
+- Always log unexpected exceptions.
+- Use `logger.exception()` inside `except` blocks.
+- Re-raise exceptions unless explicitly handled.
+
+Correct:
+
+```python
+except Exception:
+    logger.exception("Unexpected error")
+    raise
+```
+
+Incorrect:
+
+```python
+except Exception:
+    pass
+```
+
+---
+
+## AI Code Generation Requirements
+
+When generating Python code:
+
+- Add logging for:
+  - API calls
+  - Database operations
+  - File operations
+  - Background jobs
+  - Async tasks
+  - Long-running operations
+
+- Include:
+  - operation name
+  - duration
+  - relevant identifiers
+
+- Use:
+  - `logger.debug()`
+  - `logger.info()`
+  - `logger.warning()`
+  - `logger.error()`
+  - `logger.exception()`
+  - `logger.critical()`
+
+appropriately.
+
+- Do not:
+  - use `print()`
+  - duplicate logs across layers
+  - log sensitive information
+  - swallow exceptions silently
+
+---
+
+## Preferred Logging Format
+
+Every important log entry should answer:
+
+- What happened?
+- Which resource was involved?
+- Was it successful?
+- How long did it take?
+- If it failed, why?
+
+Example:
+
+```python
+logger.info(
+    "Document exported successfully",
+    extra={
+        "document_id": document_id,
+        "format": "pdf",
+        "duration_ms": 183,
+    },
+)
+```

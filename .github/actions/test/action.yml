@@ -1,4 +1,5 @@
 name: Run Tests
+description: Install dependencies, build the package, and run tests with coverage reporting.
 
 runs:
   using: 'composite'
@@ -26,7 +27,7 @@ runs:
         VERSION: 0.0.1
       run: just build
       shell: bash
-    - name: Run tests
+    - name: Run tests with coverage
       run: |
         if [ "$RUNNER_OS" == "Linux" ]; then
           # ifconfig
@@ -36,7 +37,7 @@ runs:
           sudo echo "$docker_ip host.docker.internal" | sudo tee -a /etc/hosts
           ping -c 2 host.docker.internal
 
-          just test
+          just test-cov
         fi
         # elif [ "$RUNNER_OS" == "macOS" ]; then
         #   # ifconfig
@@ -63,3 +64,23 @@ runs:
       shell: bash
       env:
         PYTHON_VERSION: ${{ matrix.python-version }}
+    - name: Coverage summary
+      if: always() && runner.os == 'Linux' && hashFiles('coverage.xml') != ''
+      uses: irongut/CodeCoverageSummary@v1.3.0
+      with:
+        filename: coverage.xml
+        format: markdown
+        output: file
+    - name: Add coverage to job summary
+      if: always() && runner.os == 'Linux' && hashFiles('code-coverage-results.md') != ''
+      run: cat code-coverage-results.md >> "$GITHUB_STEP_SUMMARY"
+      shell: bash
+    - name: Upload coverage artifacts
+      if: always() && runner.os == 'Linux' && hashFiles('coverage.xml') != ''
+      uses: actions/upload-artifact@v4
+      with:
+        name: coverage-py${{ matrix.python-version }}
+        path: |
+          coverage.xml
+          htmlcov/
+        retention-days: 14

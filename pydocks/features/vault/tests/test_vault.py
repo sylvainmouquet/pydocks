@@ -1,31 +1,34 @@
+import logging
+import os
 from http import HTTPStatus
 
 import aiohttp
 import pytest
-import os
-
-from aiohttp import ClientTimeout
-from loguru import logger
 import pytest_asyncio
+from aiohttp import ClientTimeout
+
+logger = logging.getLogger(__name__)
 
 
 @pytest_asyncio.fixture(scope="session", loop_scope="session", autouse=True)
 async def begin_clean_all_containers(vault_clean_all_containers):
-    logger.info("Begin - clean all containers")
+    logger.info(
+        "Beginning container cleanup session",
+        extra={"feature": "vault"},
+    )
 
 
 @pytest.mark.asyncio
 async def test_vault_default_version(vault_container):
-    # Get environment variables from the Vault container
     container_env_dict = dict(env.split("=") for env in vault_container.config.env)
 
     assert container_env_dict["NAME"] == "vault"
     assert container_env_dict["VAULT_TOKEN"] == "00000000-0000-0000-0000-000000000000"
 
     version_output = vault_container.execute(["vault", "version"])
-    assert version_output.startswith(
-        "Vault v1.18"
-    ), f"Unexpected version output: {version_output}"
+    assert version_output.startswith("Vault v1.18"), (
+        f"Unexpected version output: {version_output}"
+    )
 
 
 @pytest.fixture
@@ -37,22 +40,19 @@ def custom_vault_version():
 
 @pytest.mark.asyncio
 async def test_vault_custom_version(custom_vault_version, vault_container):
-    # Get environment variables from the Vault container
     container_env_dict = dict(env.split("=") for env in vault_container.config.env)
 
     assert container_env_dict["NAME"] == "vault"
     assert container_env_dict["VAULT_TOKEN"] == "00000000-0000-0000-0000-000000000000"
 
     version_output = vault_container.execute(["vault", "version"])
-    assert version_output.startswith(
-        "Vault v1.17"
-    ), f"Unexpected version output: {version_output}"
+    assert version_output.startswith("Vault v1.17"), (
+        f"Unexpected version output: {version_output}"
+    )
 
 
 @pytest.mark.asyncio
 async def test_vault_execute_command(vault_container):
-    # Connect to the Vault
-
     async with aiohttp.ClientSession(timeout=ClientTimeout(60)) as session:
         data = {
             "role_id": "unknown",
@@ -64,7 +64,6 @@ async def test_vault_execute_command(vault_container):
         ) as response:
             assert response.status == HTTPStatus.BAD_REQUEST
 
-        # Read the vault credentials from the file
         credentials = vault_container.execute(["cat", "/vault-credentials.env"])
         credentials_dict = dict(line.split("=") for line in credentials.splitlines())
         role_id = credentials_dict.get("ROLE_ID")

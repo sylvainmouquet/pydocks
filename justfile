@@ -1,4 +1,4 @@
-python_version := env_var_or_default('PYTHON_VERSION', '3.13')
+python_version := env_var_or_default('PYTHON_VERSION', '3.14')
 
 set shell := ["bash", "-euc"]
 set positional-arguments
@@ -69,6 +69,24 @@ test *args: check-docker
     else
       uv run --python {{python_version}} pytest -vvv --log-cli-level=INFO "$@"
     fi
+
+# Run tests with coverage collection and 100% threshold enforcement
+test-cov *args: check-docker
+    #!/usr/bin/env bash
+    set -euo pipefail
+    COVERAGE_FAIL_UNDER="${COVERAGE_FAIL_UNDER:-100}"
+    if [ $# -eq 0 ]; then
+      uv run --python {{python_version}} coverage run -m pytest -vvv --log-cli-level=INFO
+    else
+      uv run --python {{python_version}} coverage run -m pytest -vvv --log-cli-level=INFO "$@"
+    fi
+    uv run coverage report --fail-under="${COVERAGE_FAIL_UNDER}"
+    uv run coverage html
+    uv run coverage xml -o coverage.xml
+
+# Show coverage report from the last test-cov run
+coverage:
+    uv run --python {{python_version}} coverage report --show-missing
 
 # Run linter and formatter
 lint:

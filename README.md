@@ -62,29 +62,44 @@ uv add pydocks
 poetry add pydocks
 ```
 
+## Documentation
+
+- [Product specification](SPECS.md) — feature status and roadmap
+- [Architecture](docs/architecture.md) — feature-based layout and extension guide
+- [CI coverage policy](docs/decisions/0003-ci-coverage-policy.md) — threshold and reporting
+
 ## Development
 
 Install [just](https://github.com/casey/just) and [uv](https://docs.astral.sh/uv/), then:
 
 ```bash
 just install    # install dependencies
-just test       # run tests
+just test       # run tests (no coverage gate)
+just test-cov   # run tests with 100% coverage enforcement
+just coverage   # show coverage report from the last test-cov run
 just lint       # run linter and formatter
 just check      # run pyright
 just --list     # list all recipes
 ```
 
+Tests collect coverage via `just test-cov`, which fails if line coverage drops below 100%. CI runs the same recipe, publishes a coverage summary in the job output, posts a comment on pull requests, and uploads `coverage.xml` / HTML reports as workflow artifacts.
+
 ## Usage
 
 ### Remove all old containers
 ```python
+import logging
 import pytest
 import pytest_asyncio
-from loguru import logger
+
+logger = logging.getLogger(__name__)
 
 @pytest_asyncio.fixture(scope="session", loop_scope="session", autouse=True)
 async def begin_clean_all_containers(postgresql_clean_all_containers):
-    logger.info("Begin - clean all containers")
+    logger.info(
+        "Beginning container cleanup session",
+        extra={"feature": "postgresql"},
+    )
 ```
 
 ### Use a function container

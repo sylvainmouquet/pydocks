@@ -18,7 +18,7 @@ jobs:
       - name: Set up Python
         uses: actions/setup-python@v5
         with:
-          python-version: '3.13'
+          python-version: '3.14'
       - name: Extract version from tag
         run: echo "VERSION=${GITHUB_REF#refs/tags/}" >> $GITHUB_ENV
       - name: Install uv
@@ -26,7 +26,7 @@ jobs:
       - name: Install just
         uses: extractions/setup-just@v2
       - name: Use uv with Python version
-        run: uv venv --python 3.13
+        run: uv venv --python 3.14
       - run: just install
       - run: just build
       - run: |
