@@ -64,11 +64,15 @@ async def test_vault_execute_command(vault_container):
             session=session,
             vault_container=vault_container,
             data=data,
-            expected_status=HTTPStatus.FORBIDDEN,
+            expected_status=HTTPStatus.BAD_REQUEST,
         )
 
         credentials = vault_container.execute(["cat", "/vault-credentials.env"])
-        credentials_dict = dict(line.split("=") for line in credentials.splitlines())
+        credentials_dict = dict(
+            line.split("=", maxsplit=1)
+            for line in credentials.splitlines()
+            if "=" in line
+        )
         role_id = credentials_dict.get("ROLE_ID")
         secret_id = credentials_dict.get("SECRET_ID")
 

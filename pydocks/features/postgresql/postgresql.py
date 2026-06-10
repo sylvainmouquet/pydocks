@@ -3,12 +3,9 @@ import os
 import time
 import uuid
 
-import anyio
 import asyncpg
 import pytest
 import pytest_asyncio
-import struct
-from anyio.abc import SocketStream
 from pycontainers import docker as libdocker
 from reattempt import reattempt
 
@@ -130,21 +127,6 @@ async def postgresql_test_connection(
     host: str, port: int, username: str, password: str, db_name: str
 ):
     await socket_test_connection(host, port)
-
-    stream: SocketStream = await anyio.connect_tcp(host, port)
-
-    startup_packet = f"user=fake-user password=fake-password dbname=fake-db host={host} port={port}\x00".encode()
-    await stream.send(struct.pack(">I", len(startup_packet)))
-    await stream.send(b"\x00\x03\x00\x00")
-    await stream.send(startup_packet)
-    await stream.send(b"\x00")
-
-    await stream.receive()
-    logger.info(
-        "PostgreSQL socket connection successful",
-        extra={"host": host, "port": port},
-    )
-    await stream.aclose()
 
     conn = await asyncpg.connect(
         user=username, password=password, database=db_name, host=host, port=port

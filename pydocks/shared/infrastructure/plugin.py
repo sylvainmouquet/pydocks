@@ -25,9 +25,9 @@ def docker():
 
 @reattempt(max_retries=30, min_time=0.1, max_time=0.5)
 async def socket_test_connection(host, port):
-    s = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
-    s.connect((host, port))
-    await anyio.wait_writable(s)
+    with socket.socket(socket.AF_INET, socket.SOCK_STREAM) as s:
+        s.connect((host, port))
+        await anyio.wait_writable(s)
 
 
 @reattempt(max_retries=30, min_time=0.1, max_time=0.5)
@@ -35,7 +35,7 @@ async def file_exists(container, filepath):
     result = container.execute(
         ["sh", "-c", f'test -e {filepath} && echo "ok" || echo "ko"']
     )
-    if result == "ko":
+    if result.strip() != "ok":
         logger.debug(
             "File not found in container",
             extra={"filepath": filepath},

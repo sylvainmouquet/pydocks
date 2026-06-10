@@ -155,6 +155,7 @@ def test_create_docker_client_local(monkeypatch):
 async def test_socket_test_connection_connects():
     with patch("pydocks.shared.infrastructure.plugin.socket.socket") as socket_mock:
         socket_instance = MagicMock()
+        socket_instance.__enter__.return_value = socket_instance
         socket_mock.return_value = socket_instance
 
         with patch(
