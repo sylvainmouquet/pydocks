@@ -1744,6 +1744,9 @@ requires-dist = [
 [package.metadata.requires-dev]
 dev = [
     { name = "certifi", specifier = ">=2025.4.26" },
+    { name = "mkdocs", specifier = ">=1.6.0" },
+    { name = "mkdocs-include-markdown-plugin", specifier = ">=7.0.0" },
+    { name = "mkdocs-material", specifier = ">=9.6.0" },
     { name = "pip", specifier = ">=24.2" },
     { name = "pytest", specifier = ">=8.3.3" },
     { name = "pytest-asyncio", specifier = ">=0.24.0" },

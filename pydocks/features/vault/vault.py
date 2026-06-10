@@ -138,3 +138,4 @@ async def setup_vault_container(docker: libdocker, container_name):  # type: ign
 async def vault_test_connection(container):
     await socket_test_connection(container.host, container.port)
     await file_exists(container, "/started")
+    await file_exists(container, "/vault-credentials.env")
