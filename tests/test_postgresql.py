@@ -15,13 +15,12 @@ async def test_postgresql_default_version(postgresql_container):
     # Get environment variables from the PostgreSQL container
     container_env_dict = dict(env.split("=") for env in postgresql_container.config.env)
 
-    assert container_env_dict["PG_MAJOR"] == "17"
-    assert container_env_dict["PG_VERSION"] == "17rc1"
+    assert container_env_dict["PG_MAJOR"] == "18"
 
 
 @pytest.fixture
 def custom_postgresql_version():
-    os.environ["TEST_POSTGRESQL_DOCKER_IMAGE"] = "docker.io/postgres:16.3"
+    os.environ["TEST_POSTGRESQL_DOCKER_IMAGE"] = "docker.io/postgres:17-alpine"
     yield
     del os.environ["TEST_POSTGRESQL_DOCKER_IMAGE"]
 
@@ -33,8 +32,7 @@ async def test_postgresql_custom_version(
     # Get environment variables from the PostgreSQL container
     container_env_dict = dict(env.split("=") for env in postgresql_container.config.env)
 
-    assert container_env_dict["PG_MAJOR"] == "16"
-    assert container_env_dict["PG_VERSION"] == "16.3-1.pgdg120+1"
+    assert container_env_dict["PG_MAJOR"] == "17"
 
 
 @pytest.mark.asyncio

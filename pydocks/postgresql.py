@@ -5,12 +5,12 @@ import os
 import pytest_asyncio
 import asyncpg
 import anyio
-from python_on_whales import docker as libdocker
 from reattempt import reattempt
 import logging
 import struct
 from anyio.abc import SocketStream
 import uuid
+from pycontainer import docker as libdocker
 
 from pydocks.plugin import (
     clean_containers,
@@ -26,7 +26,7 @@ logger.addHandler(logging.NullHandler())
 
 # https://hub.docker.com/_/postgres/tags
 # TEST_POSTGRES_DOCKER_IMAGE: str = "docker.io/postgres:16.3"
-TEST_POSTGRESQL_DOCKER_IMAGE: str = "docker.io/postgres:17rc1-alpine3.20"
+TEST_POSTGRESQL_DOCKER_IMAGE: str = "docker.io/postgres:18-alpine"
 
 
 @pytest_asyncio.fixture(scope="session", loop_scope="session")
@@ -112,7 +112,7 @@ async def setup_postgresql_container(docker: libdocker, container_name):  # type
         yield instance
 
 
-@reattempt(max_retries=30, min_time=0.1, max_time=0.5)
+@reattempt(max_retries=40, min_time=0.1, max_time=0.5)
 async def postgresql_test_connection(
     host: str, port: int, username: str, password: str, db_name: str
 ):

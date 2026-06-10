@@ -3,7 +3,7 @@ import os
 
 
 import pytest_asyncio
-from python_on_whales import docker as libdocker
+from pycontainer import docker as libdocker
 from reattempt import reattempt
 import logging
 import uuid
@@ -74,6 +74,7 @@ async def setup_vault_container(docker: libdocker, container_name):  # type: ign
 
     def run_container(container_name: str):
         return docker.run(
+            #cap_add=["IPC_LOCK"],
             image=vault_image,
             name=container_name,
             detach=True,
@@ -104,7 +105,7 @@ async def setup_vault_container(docker: libdocker, container_name):  # type: ign
         )
 
     # Select the container with the given name if exists, else create a new one
-    containers = docker.ps(all=True, filters={"name": f"^{container_name}$"})
+    containers = docker.ps(all=True, filter={"name": f"^{container_name}$"})
     if containers and len(containers) > 0:
         container = containers[0]  # type: ignore
         logger.debug(f"found existing container: {container_name}")

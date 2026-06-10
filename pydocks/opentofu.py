@@ -3,7 +3,7 @@ import os
 
 
 import pytest_asyncio
-from python_on_whales import docker as libdocker
+from pycontainer import docker as libdocker
 from reattempt import reattempt
 import logging
 import uuid
@@ -19,8 +19,7 @@ logger = logging.getLogger("pydocks")
 logger.addHandler(logging.NullHandler())
 
 
-# https://hub.docker.com/r/scalr/opentofu/tags
-TEST_OPENTOFU_DOCKER_IMAGE: str = "docker.io/scalr/opentofu:1.9.0"
+TEST_OPENTOFU_DOCKER_IMAGE: str = "ghcr.io/opentofu/opentofu:1.9"
 
 
 @pytest_asyncio.fixture(scope="session", loop_scope="session")

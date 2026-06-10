@@ -3,7 +3,7 @@ import os
 
 
 import pytest_asyncio
-from python_on_whales import docker as libdocker
+from pycontainer import docker as libdocker
 from reattempt import reattempt
 import logging
 import uuid

@@ -23,16 +23,18 @@ jobs:
 
       - name: Install uv
         uses: astral-sh/setup-uv@v4
+      - name: Install just
+        uses: extractions/setup-just@v2
       - name: Use uv with Python version
         run: uv venv --python 3.13
 
 #      - name: Install dependencies
-#        run: make install
+#        run: just install
 
       - name: Save check dependencies output (before)
         id: check_deps_before
         run: |
-          BEFORE=$(make check-deps) || true
+          BEFORE=$(just check-deps) || true
           echo "BEFORE=${BEFORE}"
 
           echo "BEFORE<<EOF" >> $GITHUB_ENV
@@ -40,13 +42,13 @@ jobs:
           echo "EOF" >> $GITHUB_ENV
 
 
-      - name: Run make update
-        run: make update
+      - name: Run just update
+        run: just update
 
-      - name: Run make check dependencies (after)
+      - name: Run just check dependencies (after)
         id: check_deps_after
         run: |
-          after=$(make check-deps) || true
+          after=$(just check-deps) || true
           echo "AFTER=${AFTER}"
 
           echo "AFTER<<EOF" >> $GITHUB_ENV

@@ -4,7 +4,7 @@ version = "1.0.2"
 description = "Pytest fixures for running tests with Docker containers"
 authors = [{name = "Sylvain Mouquet", email = "sylvain.mouquet@gmail.com"}]
 readme = "README.md"
-requires-python = ">=3.10"
+requires-python = ">=3.13"
 dependencies = []
 
 license = { text = "MIT" }
@@ -33,6 +33,7 @@ classifiers = [
     "Programming Language :: Python :: 3.11",
     "Programming Language :: Python :: 3.12",
     "Programming Language :: Python :: 3.13",
+    "Programming Language :: Python :: 3.14",
     "Topic :: Software Development :: Libraries :: Python Modules"
 ]
 
@@ -47,8 +48,8 @@ changelog = "https://github.com/sylvainmouquet/pydocks/releases"
 requires = ["hatchling"]
 build-backend = "hatchling.build"
 
-[tool.uv]
-dev-dependencies = [
+[dependency-groups]
+dev = [
     "aiohttp>=3.10.10",
     "anyio>=4.6.0",
     "asyncpg>=0.30",
@@ -57,16 +58,15 @@ dev-dependencies = [
     "pytest-asyncio>=0.24.0",
     "pytest-mock>=3.14.0",
     "pytest>=8.3.3",
-    "python-on-whales>=0.73.0",
-    "reattempt>=0.0.1",
     "reattempt>=1.0.10",
     "redis>=5.1.1",
     "ruff>=0.6.7",
+    "pycontainer"
 ]
 
 [tool.uv.sources]
 pydocks = { path = "pydocks" }
-# asyncpg = { path = "../asyncpg" }
+pycontainer = { path = "../pycontainer" }
 # asyncpg = { git = "https://github.com/MagicStack/asyncpg"}
 
 [project.entry-points.pytest11]

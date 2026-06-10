@@ -13,13 +13,13 @@ async def begin_clean_all_containers(opentofu_clean_all_containers):
 async def test_opentofu_default_version(opentofu_container):
     version_output = opentofu_container.execute(["tofu", "version"])
     assert (
-        "OpenTofu v1.9.0" in version_output
+        "OpenTofu v1.9" in version_output
     ), f"Unexpected version output: {version_output}"
 
 
 @pytest.fixture
 def custom_opentofu_version():
-    os.environ["TEST_OPENTOFU_DOCKER_IMAGE"] = "docker.io/scalr/opentofu:1.6.0"
+    os.environ["TEST_OPENTOFU_DOCKER_IMAGE"] = "ghcr.io/opentofu/opentofu:1.6.0"
     yield
     del os.environ["TEST_OPENTOFU_DOCKER_IMAGE"]
 

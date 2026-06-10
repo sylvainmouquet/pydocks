@@ -35,6 +35,7 @@ async def test_postgresql_execute_command(postgresql_container):
   - [Table of Contents](#table-of-contents)
   - [Description](#description)
   - [Installation](#installation)
+  - [Development](#development)
   - [Usage](#usage)
   - [License](#license)
   - [Contact](#contact)
@@ -59,6 +60,18 @@ PyDocks is designed to make testing with Docker containers more efficient and le
 pip install pydocks
 uv add pydocks
 poetry add pydocks
+```
+
+## Development
+
+Install [just](https://github.com/casey/just) and [uv](https://docs.astral.sh/uv/), then:
+
+```bash
+just install    # install dependencies
+just test       # run tests
+just lint       # run linter and formatter
+just check      # run pyright
+just --list     # list all recipes
 ```
 
 ## Usage

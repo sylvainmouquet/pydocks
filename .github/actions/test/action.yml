@@ -13,16 +13,18 @@ runs:
         python-version: ${{ matrix.python-version }}
     - name: Install uv
       uses: astral-sh/setup-uv@v2
+    - name: Install just
+      uses: extractions/setup-just@v2
     - name: Use uv with Python version
       run: uv venv --python ${{ matrix.python-version }}
       shell: bash
     - name: Install dependencies
-      run: make install
+      run: just install
       shell: bash
     - name: Build
       env:
         VERSION: 0.0.1
-      run: make build
+      run: just build
       shell: bash
     - name: Run tests
       run: |
@@ -34,7 +36,7 @@ runs:
           sudo echo "$docker_ip host.docker.internal" | sudo tee -a /etc/hosts
           ping -c 2 host.docker.internal
 
-          make test
+          just test
         fi
         # elif [ "$RUNNER_OS" == "macOS" ]; then
         #   # ifconfig
@@ -46,7 +48,7 @@ runs:
         #   ping -c 2 host.docker.internal
           
         #   find / -name docker.sock
-        #   DOCKER_SOCK=~/.docker/run/docker.sock make test
+        #   DOCKER_SOCK=~/.docker/run/docker.sock just test
         # elif [ "$RUNNER_OS" == "Windows" ]; then
         #   # .\.venv\Scripts\activate
         #   # $ipConfig = ipconfig | Select-String -Pattern 'IPv4 Address' | Select-Object -First 1
@@ -54,7 +56,7 @@ runs:
         #   # Add-Content -Path "$env:windir\System32\drivers\etc\hosts" -Value "$ipAddress host.docker.internal"
         #   # Test-Connection -ComputerName host.docker.internal -Count 2
         
-        #   make test
+        #   just test
         # fi
         
 
