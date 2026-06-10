@@ -12,6 +12,7 @@ pydocks/
 ├── features/
 │   ├── alpine/
 │   │   ├── alpine.py           # Fixtures and setup logic
+│   │   ├── README.md           # Feature documentation (included in MkDocs site)
 │   │   ├── resources/          # Feature-specific assets (when needed)
 │   │   └── tests/
 │   ├── postgresql/

@@ -18,10 +18,8 @@ async def begin_clean_all_containers(valkey_clean_all_containers):
 
 @pytest.mark.asyncio
 async def test_valkey_default_version(valkey_container):
-    container_env_dict = dict(env.split("=") for env in valkey_container.config.env)
-
-    assert "VALKEY_VERSION" in container_env_dict
-    assert container_env_dict["VALKEY_VERSION"] == "8.1.1"
+    version_output = valkey_container.execute(["valkey-server", "--version"])
+    assert "v=8.1.1" in version_output
 
 
 @pytest.fixture
@@ -33,10 +31,8 @@ def custom_valkey_version():
 
 @pytest.mark.asyncio
 async def test_valkey_custom_version(custom_valkey_version, valkey_container):
-    container_env_dict = dict(env.split("=") for env in valkey_container.config.env)
-
-    assert "VALKEY_VERSION" in container_env_dict
-    assert container_env_dict["VALKEY_VERSION"] == "7.2.9"
+    version_output = valkey_container.execute(["valkey-server", "--version"])
+    assert "v=7.2.9" in version_output
 
 
 @pytest.mark.asyncio
@@ -58,7 +54,9 @@ async def test_valkey_execute_command(valkey_container):
     get_deleted = valkey_container.execute(["valkey-cli", "GET", "test_key"])
     assert get_deleted.strip() == ""
 
-    async with await redis.from_url("redis://localhost:6380", encoding="utf8") as vkey:
+    async with await redis.from_url(
+        f"redis://{valkey_container.host}:{valkey_container.port}", encoding="utf8"
+    ) as vkey:
         await vkey.flushall()
         await vkey.set("test_key", "test_value")
         value = await vkey.get("test_key")

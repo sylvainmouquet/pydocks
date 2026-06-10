@@ -39,7 +39,7 @@ classifiers = [
 
 [project.urls]
 homepage = "https://github.com/sylvainmouquet/pydocks"
-documentation = "https://github.com/sylvainmouquet/pydocks"
+documentation = "https://sylvainmouquet.github.io/pydocks/"
 repository = "https://github.com/sylvainmouquet/pydocks"
 changelog = "https://github.com/sylvainmouquet/pydocks/releases"
 
@@ -61,7 +61,9 @@ dev = [
     "reattempt>=1.0.10",
     "redis>=5.1.1",
     "ruff>=0.6.7",
-    "pycontainers"
+    "pycontainers",
+    "mkdocs-material>=9.6.0",
+    "mkdocs-include-markdown-plugin>=7.0.0",
 ]
 
 [tool.uv.sources]
@@ -74,6 +76,9 @@ pydocks = "pydocks"
 
 [tool.coverage.run]
 source = ["pydocks"]
+omit = [
+    "*/tests/*",
+]
 branch = false
 
 [tool.coverage.report]

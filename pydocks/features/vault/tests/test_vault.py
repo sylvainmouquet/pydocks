@@ -60,7 +60,8 @@ async def test_vault_execute_command(vault_container):
         }
 
         async with session.post(
-            "http://host.docker.internal:8200/v1/auth/approle/login", json=data
+            f"http://{vault_container.host}:{vault_container.port}/v1/auth/approle/login",
+            json=data,
         ) as response:
             assert response.status == HTTPStatus.BAD_REQUEST
 
@@ -77,7 +78,8 @@ async def test_vault_execute_command(vault_container):
             "secret_id": secret_id,
         }
         async with session.post(
-            "http://host.docker.internal:8200/v1/auth/approle/login", json=data
+            f"http://{vault_container.host}:{vault_container.port}/v1/auth/approle/login",
+            json=data,
         ) as response:
             assert response.status == HTTPStatus.OK
             response_data = await response.json()

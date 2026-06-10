@@ -45,7 +45,9 @@ async def file_exists(container, filepath):
         )
 
 
-def get_container_host_port(docker: PyContainers, container, container_port: int) -> int:
+def get_container_host_port(
+    docker: PyContainers, container, container_port: int
+) -> int:
     inspect_output = docker.inspect(container.ID)
     inspect_data = json.loads(inspect_output)[0]
     ports = inspect_data["NetworkSettings"]["Ports"]

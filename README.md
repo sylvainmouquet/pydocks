@@ -64,9 +64,12 @@ poetry add pydocks
 
 ## Documentation
 
+- [Published docs](https://sylvainmouquet.github.io/pydocks/) — MkDocs site (GitHub Pages)
 - [Product specification](SPECS.md) — feature status and roadmap
 - [Architecture](docs/architecture.md) — feature-based layout and extension guide
 - [CI coverage policy](docs/decisions/0003-ci-coverage-policy.md) — threshold and reporting
+
+Preview the site locally with `just docs-serve` or build it with `just docs-build`.
 
 ## Development
 
@@ -79,6 +82,8 @@ just test-cov   # run tests with 100% coverage enforcement
 just coverage   # show coverage report from the last test-cov run
 just lint       # run linter and formatter
 just check      # run pyright
+just docs-build # build MkDocs site
+just docs-serve # preview docs locally
 just --list     # list all recipes
 ```
 

@@ -11,6 +11,7 @@ from reattempt import reattempt
 from pydocks.shared.infrastructure.plugin import (
     clean_containers,
     file_exists,
+    get_container_host_port,
     socket_test_connection,
     wait_and_run_container,
 )
@@ -77,8 +78,8 @@ async def setup_vault_container(docker: libdocker, container_name):  # type: ign
                     "VAULT_ADDR": "http://127.0.0.1:8200",
                 },
                 command=["/test-vault-init.sh"],
-                publish=[(8200, 8200)],
                 expose=[8200],
+                publish_all=True,
                 volumes=[
                     (
                         os.path.join(
@@ -111,6 +112,9 @@ async def setup_vault_container(docker: libdocker, container_name):  # type: ign
             )
             container = run_container(container_name)
 
+        container.host = "127.0.0.1"
+        container.port = get_container_host_port(docker, container, 8200)
+
         await vault_test_connection(container)
 
         duration_ms = round((time.perf_counter() - start) * 1000)
@@ -132,5 +136,5 @@ async def setup_vault_container(docker: libdocker, container_name):  # type: ign
 
 @reattempt(max_retries=30, min_time=0.1, max_time=0.5)
 async def vault_test_connection(container):
-    await socket_test_connection("host.docker.internal", 8200)
+    await socket_test_connection(container.host, container.port)
     await file_exists(container, "/started")

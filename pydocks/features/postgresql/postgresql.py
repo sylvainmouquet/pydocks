@@ -14,9 +14,9 @@ from reattempt import reattempt
 
 from pydocks.shared.infrastructure.plugin import (
     clean_containers,
+    get_container_host_port,
     socket_test_connection,
     wait_and_run_container,
-    wait_port_available,
 )
 
 logger = logging.getLogger(__name__)
@@ -79,11 +79,9 @@ async def setup_postgresql_container(docker: libdocker, container_name):  # type
                 envs={
                     "POSTGRES_PASSWORD": "postgres",
                 },
-                publish=[(5433, 5432)],
-                expose=[5433],
+                expose=[5432],
+                publish_all=True,
             )
-
-        await wait_port_available(host="localhost", port=5433)
 
         containers = docker.ps(all=True, filters={"name": f"^{container_name}$"})
         if containers and len(containers) > 0:
@@ -99,9 +97,12 @@ async def setup_postgresql_container(docker: libdocker, container_name):  # type
             )
             container = run_container(container_name)
 
+        container.host = "127.0.0.1"
+        container.port = get_container_host_port(docker, container, 5432)
+
         await postgresql_test_connection(
-            host="127.0.0.1",
-            port=5433,
+            host=container.host,
+            port=container.port,
             username="postgres",
             password="postgres",
             db_name="postgres",

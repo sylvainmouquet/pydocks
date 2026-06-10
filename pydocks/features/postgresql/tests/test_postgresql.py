@@ -42,8 +42,8 @@ async def test_postgresql_custom_version(
 @pytest.mark.asyncio
 async def test_postgresql_execute_command(postgresql_container):
     conn = await asyncpg.connect(
-        host="127.0.0.1",
-        port=5433,
+        host=postgresql_container.host,
+        port=postgresql_container.port,
         user="postgres",
         password="postgres",
         database="postgres",
@@ -59,8 +59,8 @@ async def test_postgresql_execute_command(postgresql_container):
 @pytest.mark.asyncio(loop_scope="session")
 async def test_reuse_postgresql_container_1_2(postgresql_container_session):
     conn = await asyncpg.connect(
-        host="127.0.0.1",
-        port=5433,
+        host=postgresql_container_session.host,
+        port=postgresql_container_session.port,
         user="postgres",
         password="postgres",
         database="postgres",
@@ -85,8 +85,8 @@ async def test_reuse_postgresql_container_1_2(postgresql_container_session):
 @pytest.mark.asyncio(loop_scope="session")
 async def test_reuse_postgresql_container_2_2(postgresql_container_session):
     conn = await asyncpg.connect(
-        host="127.0.0.1",
-        port=5433,
+        host=postgresql_container_session.host,
+        port=postgresql_container_session.port,
         user="postgres",
         password="postgres",
         database="postgres",

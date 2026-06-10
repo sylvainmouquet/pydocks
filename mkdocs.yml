@@ -1,0 +1,55 @@
+site_name: PyDocks
+site_description: Pytest fixtures for running tests with Docker containers
+site_url: https://sylvainmouquet.github.io/pydocks/
+repo_url: https://github.com/sylvainmouquet/pydocks
+repo_name: sylvainmouquet/pydocks
+edit_uri: edit/main/docs/
+
+theme:
+  name: material
+  palette:
+    - scheme: default
+      primary: indigo
+      accent: indigo
+      toggle:
+        icon: material/brightness-7
+        name: Switch to dark mode
+    - scheme: slate
+      primary: indigo
+      accent: indigo
+      toggle:
+        icon: material/brightness-4
+        name: Switch to light mode
+  features:
+    - navigation.sections
+    - navigation.expand
+    - content.code.copy
+    - search.suggest
+
+plugins:
+  - search
+  - include-markdown
+
+nav:
+  - Home: index.md
+  - Architecture: architecture.md
+  - Features:
+    - PostgreSQL: features/postgresql.md
+    - Redis: features/redis.md
+    - Valkey: features/valkey.md
+    - Vault: features/vault.md
+    - Ubuntu: features/ubuntu.md
+    - Alpine: features/alpine.md
+    - OpenTofu: features/opentofu.md
+  - Decisions:
+    - CI coverage policy: decisions/0003-ci-coverage-policy.md
+
+markdown_extensions:
+  - admonition
+  - pymdownx.details
+  - pymdownx.superfences
+  - pymdownx.highlight
+  - pymdownx.inlinehilite
+  - tables
+  - toc:
+      permalink: true

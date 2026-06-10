@@ -55,7 +55,7 @@ async def test_redis_execute_command(redis_container):
     assert get_deleted.strip() == ""
 
     async with await redis.from_url(
-        "redis://localhost:6379", encoding="utf8"
+        f"redis://{redis_container.host}:{redis_container.port}", encoding="utf8"
     ) as rredis:
         await rredis.flushall()
         await rredis.set("test_key", "test_value")

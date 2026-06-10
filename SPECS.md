@@ -221,15 +221,15 @@ Collect and enforce test coverage in CI per project policy (100% target).
 
 ### 16. Published documentation site
 
-**Status:** Planned (Long Term)
+**Status:** Done
 
-Generate and publish long-form docs via GitHub Pages.
+Generate and publish long-form docs via GitHub Pages using MkDocs Material.
 
-- [ ] Choose doc generator (MkDocs, Sphinx, or similar)
-- [ ] GitHub Actions workflow to build and publish `docs/`
-- [ ] Feature-level README files under `pydocks/features/<name>/`
+- [x] Choose doc generator (MkDocs Material)
+- [x] GitHub Actions workflow to build and publish `docs/`
+- [x] Feature-level README files under `pydocks/features/<name>/`
 
-**Potential files:** `docs/`, `.github/workflows/docs.yml`
+**Key files:** `mkdocs.yml`, `docs/`, `.github/workflows/docs.yml`, `pydocks/features/*/README.md`, `justfile`
 
 ## Recommended Roadmap
 

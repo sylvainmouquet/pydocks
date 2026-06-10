@@ -102,3 +102,11 @@ update:
 # List outdated dependencies
 check-deps:
     .venv/bin/pip list --outdated
+
+# Build documentation site
+docs-build:
+    uv run mkdocs build --strict
+
+# Serve documentation locally
+docs-serve:
+    uv run mkdocs serve
