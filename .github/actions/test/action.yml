@@ -16,6 +16,15 @@ runs:
       uses: astral-sh/setup-uv@v2
     - name: Install just
       uses: extractions/setup-just@v2
+    - name: Checkout sibling dependencies
+      run: |
+        if [ ! -d ../pycontainers ]; then
+          git clone --depth 1 https://github.com/sylvainmouquet/pycontainer.git ../pycontainers
+        fi
+        if [ ! -d ../proxycraft ]; then
+          git clone --depth 1 https://github.com/sylvainmouquet/proxycraft.git ../proxycraft
+        fi
+      shell: bash
     - name: Use uv with Python version
       run: uv venv --python ${{ matrix.python-version }}
       shell: bash
