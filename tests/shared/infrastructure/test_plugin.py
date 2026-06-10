@@ -2,10 +2,13 @@ from unittest.mock import AsyncMock, MagicMock, patch
 
 import pytest
 
+import json
+
 from pydocks.shared.infrastructure.plugin import (
     clean_containers,
     create_docker_client,
     file_exists,
+    get_container_host_port,
     socket_test_connection,
     wait_and_run_container,
     wait_port_available,
@@ -51,6 +54,15 @@ async def test_clean_containers_logs_and_reraises_on_failure():
 async def test_file_exists_raises_when_missing():
     container = MagicMock()
     container.execute.return_value = "ko"
+
+    with pytest.raises(FileNotFoundError):
+        await file_exists(container, "/missing")
+
+
+@pytest.mark.asyncio
+async def test_file_exists_raises_when_missing_with_trailing_newline():
+    container = MagicMock()
+    container.execute.return_value = "ko\n"
 
     with pytest.raises(FileNotFoundError):
         await file_exists(container, "/missing")
@@ -165,3 +177,38 @@ async def test_socket_test_connection_connects():
             await socket_test_connection("127.0.0.1", 6379)
 
     socket_instance.connect.assert_called_once_with(("127.0.0.1", 6379))
+
+
+def test_get_container_host_port_returns_published_port():
+    docker = MagicMock()
+    container = MagicMock()
+    container.ID = "container-id"
+    docker.inspect.return_value = json.dumps(
+        [
+            {
+                "NetworkSettings": {
+                    "Ports": {"5432/tcp": [{"HostPort": "15432"}]},
+                },
+            }
+        ]
+    )
+
+    assert get_container_host_port(docker, container, 5432) == 15432
+
+
+def test_get_container_host_port_raises_when_unpublished():
+    docker = MagicMock()
+    container = MagicMock()
+    container.ID = "container-id"
+    docker.inspect.return_value = json.dumps(
+        [
+            {
+                "NetworkSettings": {
+                    "Ports": {"5432/tcp": None},
+                },
+            }
+        ]
+    )
+
+    with pytest.raises(RuntimeError, match="Container port 5432 is not published"):
+        get_container_host_port(docker, container, 5432)
